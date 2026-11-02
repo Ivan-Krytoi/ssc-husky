@@ -1,0 +1,87 @@
+/* ============================================================
+   ССК «ХАСКИ» — страницы разделов (дополнение к дизайн-киту)
+   tokens.css + style.css берутся из кита без правок; здесь только
+   компоненты, которых в ките нет: чипы-radio списка заявок, FAQ,
+   notice, successes/ошибки, 404.
+   ============================================================ */
+
+/* ---------- Закреплённая шапка: та же логика, что и на главной ---------- */
+@media (max-width: 1023px) {
+  .header .btn--primary { display: none; } /* CTA дублирует меню; оставляем шапку в одну строку */
+}
+
+/* Мобильное меню-бургер (nav скрыт ≤767px в ките; header уже sticky=positioned) */
+@media (max-width: 767px) {
+  body.nav-open .nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    position: absolute;
+    left: 0; right: 0; top: 100%;
+    z-index: 40;
+    background: var(--bg-0);
+    border-block: 1px solid var(--hairline);
+    padding: var(--sp-16) var(--sp-20) var(--sp-24);
+    box-shadow: 0 24px 48px rgba(2, 8, 20, .5);
+  }
+}
+
+/* ---------- Чипы-radio (форма записи) ---------- */
+.chip-radios { gap: var(--sp-8); }
+.chip-radio { position: relative; display: inline-flex; }
+.chip-radio input {
+  position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0;
+}
+.chip-radio input:checked + .chip {
+  background: var(--primary); color: #0B0F17; border-color: transparent;
+}
+.chip-radio input:focus-visible + .chip {
+  outline: 2px solid var(--primary); outline-offset: 2px;
+}
+.chip-radio:hover .chip { color: var(--text-1); }
+/* форма на градиентной плите: перенастройка как в ките */
+.cta .chip-radio input:checked + .chip { background: #0B0F17; color: #FFFFFF; }
+.cta .chip-radio input:focus-visible + .chip { outline: 2px solid #0B0F17; outline-offset: 2px; }
+.cta .chip-radio:hover .chip { color: #0B0F17; }
+
+/* ---------- Подсказка поля ---------- */
+.field__hint { color: var(--text-3); font-size: var(--fs-small); margin-top: var(--sp-4); }
+.cta .field__hint { color: rgba(11,15,23,.7); }
+
+/* ---------- Notice: успех/ошибка формы ---------- */
+.notice {
+  padding: var(--sp-16) var(--sp-20);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--success);
+  background: rgba(53,196,141,.12);
+  color: var(--text-1);
+  margin-bottom: var(--sp-24);
+}
+.notice--error {
+  border-color: var(--error);
+  background: rgba(235,84,84,.12);
+}
+
+/* ---------- FAQ (аккордеон <details>) ---------- */
+.faq {
+  background: var(--bg-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  padding: var(--sp-16) var(--sp-20);
+  margin-bottom: var(--sp-12);
+}
+.faq summary { cursor: pointer; color: var(--text-1); }
+.faq summary::marker { color: var(--primary); }
+.faq p { margin: var(--sp-12) 0 0; color: var(--text-2); }
+.faq a { color: var(--primary-hover); }
+
+/* ---------- 404 ---------- */
+.section-404 { padding-block: var(--sp-48) var(--sp-96); }
+.husky-404 {
+  font-size: 96px; line-height: 1;
+  font-family: var(--font-display);
+  background: var(--grad-banner);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  margin-bottom: var(--sp-16);
+}

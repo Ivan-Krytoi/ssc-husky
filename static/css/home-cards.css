@@ -1,0 +1,322 @@
+/* ============================================================
+   ССК «ХАСКИ» — ГЛАВНАЯ «ПРОЛЁТ КАРТОЧЕК»
+   Подключать ТРЕТЬИМ (после tokens.css и style.css).
+   Идея (решение владельца от 30.10): 3D-карточки-разделы летят
+   снизу вверх одна за другой; клик по карточке открывает её
+   «мини-сайт» в полноэкранном оверлее. Палитра и компоненты —
+   из tokens.css / style.css, новых цветов не вводим.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. БАЗА: режим без JS и режим reduced-motion —
+   карточки статичной стопкой, всё кликабельно и читается.
+   ------------------------------------------------------------ */
+.deck {
+  position: relative;
+  padding-block: var(--sp-48) var(--sp-64);
+  border-bottom: 1px solid var(--hairline);
+}
+.deck__stage { display: grid; gap: var(--sp-24); }
+.fcard { display: grid; place-items: center; padding-inline: var(--gutter); }
+
+/* Навигационная полоска колоды (пауза / подсказка) */
+.deck__ui {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: var(--sp-12); margin-top: var(--sp-24); padding-inline: var(--gutter);
+}
+
+/* ------------------------------------------------------------
+   2. КАРТОЧКА (панель)
+   ------------------------------------------------------------ */
+.fcard__panel {
+  position: relative;
+  width: min(1120px, 100%);
+  height: auto; /* в полёте фиксируется по вертикали */
+  display: flex; flex-direction: column;
+  gap: clamp(10px, 1.4vh, 18px);
+  padding: clamp(20px, 3.2vw, 44px);
+  border-radius: 26px;
+  color: var(--text-1);
+  text-align: left;
+  overflow: hidden;
+  cursor: pointer;
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--primary) 7%, transparent), transparent 42%),
+    var(--bg-1);
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
+  box-shadow: var(--shadow-1), 0 40px 90px rgba(11, 15, 23, .5);
+}
+.fcard__panel:hover {
+  filter: brightness(1.05);
+  box-shadow: var(--shadow-1), var(--glow-primary), 0 40px 90px rgba(11, 15, 23, .55);
+}
+/* фокус на самой карточке-кнопке */
+.fcard__panel:focus-visible {
+  outline: 2px solid var(--primary-hover);
+  outline-offset: 3px;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-1), var(--glow-primary);
+}
+
+/* большой порядковый номер — «форма стадиона» */
+.fcard__num {
+  position: absolute; top: clamp(6px, 1.6vh, 18px); right: clamp(16px, 2.6vw, 34px);
+  font-family: var(--font-display); font-weight: 800; line-height: 1;
+  font-size: clamp(64px, 9vw, 118px);
+  color: var(--text-1); opacity: .12; pointer-events: none; user-select: none;
+}
+/* огромный водяной знак-эмодзи снизу справа */
+.fcard__mark {
+  position: absolute; right: clamp(-24px, -2vw, -8px); bottom: clamp(-38px, -3vh, -12px);
+  font-size: clamp(150px, 26vh, 250px);
+  opacity: .07; pointer-events: none; user-select: none; line-height: 1;
+}
+
+.fcard__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-8); }
+.fcard__head .overline { margin: 0; }
+.fcard__title {
+  margin: 0;
+  font-size: clamp(26px, 4.2vw, 44px);
+  letter-spacing: -0.02em;
+}
+.fcard__lead {
+  margin: 0; max-width: 64ch;
+  color: var(--text-2); font-size: var(--fs-lead);
+}
+.fcard__body { flex: 1 1 auto; overflow: hidden; display: flex; flex-direction: column; gap: var(--sp-12); }
+
+/* мини-факты внутри карточки (строки «значение — подпись») */
+.fcard__facts { display: flex; flex-direction: column; }
+.fcard__fact {
+  display: flex; align-items: baseline; gap: var(--sp-12);
+  padding-block: var(--sp-8) var(--sp-4);
+  border-bottom: 1px solid var(--hairline);
+  font-size: 14px; color: var(--text-2);
+}
+.fcard__fact b {
+  font-family: var(--font-display); font-weight: 700; font-size: 16px;
+  color: var(--text-1); white-space: nowrap;
+}
+/* мини-чипы внутри карточки */
+.fcard__chips { display: flex; flex-wrap: wrap; gap: var(--sp-8); }
+.fcard__chips .chip { pointer-events: none; } /* чипы внутри карточки — просто виджет */
+/* мини-шаги записи */
+.fcard__steps { display: flex; flex-wrap: wrap; gap: var(--sp-12); font-size: 14px; color: var(--text-2); }
+.fcard__steps b { display: inline-grid; place-items: center; min-width: 30px; height: 30px;
+  border-radius: 50%; background: rgba(255,255,255,.85); color: #0B0F17;
+  font-family: var(--font-display); font-weight: 800; margin-right: var(--sp-8); }
+
+.fcard__foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--sp-12); margin-top: var(--sp-4);
+}
+.fcard__foot-hint { color: var(--text-3); font-size: var(--fs-small); }
+
+/* Акцентная карточка «Записаться» — плитка с баннера */
+.fcard__panel--accent {
+  background: var(--grad-banner);
+  border-color: transparent;
+  color: #0B0F17;
+  box-shadow: var(--shadow-1), var(--glow-primary), 0 40px 90px rgba(11, 15, 23, .45);
+}
+.fcard__panel--accent .overline { color: rgba(11, 15, 23, .68); }
+.fcard__panel--accent .fcard__title { color: #0B0F17; }
+.fcard__panel--accent .fcard__lead,
+.fcard__panel--accent .fcard__foot-hint { color: rgba(11, 15, 23, .78); }
+.fcard__panel--accent .fcard__fact { color: rgba(11, 15, 23, .78); border-color: rgba(11, 15, 23, .18); }
+.fcard__panel--accent .fcard__fact b { color: #0B0F17; }
+.fcard__panel--accent .fcard__num { color: #0B0F17; opacity: .14; }
+.fcard__panel--accent .fcard__steps { color: rgba(11, 15, 23, .82); }
+.fcard__panel--accent .chip { background: rgba(255, 255, 255, .82); color: #0B0F17; }
+.fcard__panel--accent .fcard__open { background: #0B0F17; color: #FFFFFF !important; }
+.fcard__panel--accent .fcard__open:hover { box-shadow: 0 0 24px rgba(11, 15, 23, .4); }
+
+/* ------------------------------------------------------------
+   3. ПОЛЁТ (только при JS и отсутствии reduced-motion)
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  body.js .deck {
+    --fly-step: 3.2s;  /* перерыв между запусками карточек */
+    --fly-dur: 19.2s;  /* полный цикл одной карточки (6 × 3.2 s) */
+    --header-h: 72px;  /* высота шапки: дек = вьюпорт минус шапка */
+    height: calc(100svh - var(--header-h));
+    min-height: 540px;
+    padding: 0; overflow: hidden;
+  }
+  body.js .deck::after {
+    /* дополнительное свечение снизу — «трамплин» вылета */
+    content: "";
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 112%, rgba(35, 194, 222, .12), transparent 60%),
+                radial-gradient(ellipse at 18% 108%, rgba(123, 97, 255, .10), transparent 55%);
+  }
+  body.js .deck__stage {
+    position: absolute; inset: 0; display: block; overflow: hidden;
+    perspective: 1400px; perspective-origin: 50% 45%;
+  }
+  body.js .fcard { position: absolute; inset: 0; padding: clamp(12px, 2.4vh, 28px) var(--gutter) calc(clamp(12px, 2.4vh, 28px) + 116px); }
+
+  body.js .fcard__panel {
+    height: min(calc(84svh - 124px), 780px);
+    opacity: 0; /* до своего запуска — невидимая, ниже сцены */
+    will-change: transform, opacity;
+    animation: husky-fly var(--fly-dur) linear infinite;
+    animation-delay: calc(var(--i) * var(--fly-step) + .45s);
+    animation-fill-mode: both;
+  }
+  /* пауза полёта: наведение, кнопка, оверлей, вне экрана */
+  body.js.deck--paused .fcard__panel,
+  body.js.is-overlay-open .fcard__panel,
+  body.js.deck--idle .fcard__panel { animation-play-state: paused; }
+
+  /* список в навигационной полоске */
+  body.js .deck__ui {
+    position: absolute; left: 0; right: 0; bottom: clamp(10px, 3vh, 26px);
+    margin: 0; z-index: 6;
+  }
+}
+
+@keyframes husky-fly {
+  0%   {
+    z-index: 70; opacity: 0; pointer-events: none;
+    transform: translateY(118%) rotateX(16deg) scale(.84);
+    animation-timing-function: cubic-bezier(.16, .8, .32, 1);
+  }
+  4%   { z-index: 70; opacity: .92; pointer-events: auto; }
+  16%  {
+    z-index: 60;
+    transform: translateY(0) rotateX(0deg) scale(1); opacity: 1;
+    animation-timing-function: linear;
+  }
+  28%  { transform: translateY(-5%) scale(.97); opacity: .9; }
+  46%  { transform: translateY(-24%) scale(.93) rotateX(-3deg); opacity: .6; }
+  64%  { z-index: 40; transform: translateY(-60%) scale(.9) rotateX(-6deg); opacity: .25; }
+  72%  { z-index: 30; transform: translateY(-100%) rotateX(-10deg) scale(.87); opacity: .05; pointer-events: none; }
+  80%  { transform: translateY(-140%) rotateX(-14deg) scale(.85); opacity: 0; }
+  100% { transform: translateY(-140%) rotateX(-14deg) scale(.85); opacity: 0; pointer-events: none; }
+}
+
+/* шапку держим в одну строку на средних экранах (CTA дублирует меню) */
+@media (max-width: 1023px) {
+  .header .btn--primary { display: none; }
+}
+.logo__name, .logo__sub, .nav a { white-space: nowrap; }
+.skip-link { top: -64px; } /* полностью за экраном, пока не получит фокус */
+/* контраст подсказок тайлов и футера-строк на тёмном фоне */
+.tile__hint { color: var(--text-2); }
+.deck__hint, .fcard__foot-hint, .footer__bottom { color: var(--text-2); }
+.skip-link { white-space: nowrap; }
+
+.deck__hint {
+  display: inline-flex; align-items: center; gap: var(--sp-8);
+  padding: var(--sp-8) var(--sp-16);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--bg-0) 72%, transparent);
+  border: 1px solid var(--hairline);
+  color: var(--text-2); font-size: 13px;
+  backdrop-filter: blur(8px);
+}
+.deck__hint b { color: var(--text-1); }
+
+/* ------------------------------------------------------------
+   4. ОВЕРЛЕЙ «МИНИ-САЙТ РАЗДЕЛА»
+   ------------------------------------------------------------ */
+.site-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: grid; place-items: center;
+  padding: clamp(10px, 3vh, 28px) clamp(10px, 2.4vw, 36px);
+  visibility: hidden; pointer-events: none;
+}
+body.is-overlay-open { overflow: hidden; } /* скролл страницы замораживаем */
+body.is-overlay-open .site-overlay { visibility: visible; pointer-events: auto; }
+
+.site-overlay__back {
+  position: absolute; inset: 0;
+  background: color-mix(in srgb, var(--bg-0) 74%, transparent);
+  backdrop-filter: blur(12px);
+  opacity: 0; transition: opacity var(--dur-slow) var(--ease);
+  border: 0; padding: 0; cursor: pointer;
+}
+/* кнопка затемнения растягивается на весь оверлей (в теге <button>) */
+.site-overlay__back::before {
+  content: ""; position: absolute; inset: 0;
+}
+body.is-overlay-open .site-overlay__back { opacity: 1; }
+
+.site-page {
+  position: relative;
+  width: min(1180px, 100%); max-height: min(92svh, 980px);
+  display: flex; flex-direction: column;
+  border-radius: 22px; overflow: hidden;
+  background: var(--bg-0);
+  border: 1px solid color-mix(in srgb, var(--primary) 26%, transparent);
+  box-shadow: 0 50px 140px rgba(0, 0, 0, .6), var(--glow-primary);
+  opacity: 0; transform: scale(.94) translateY(24px);
+  transition: transform .38s var(--ease), opacity .3s var(--ease);
+  will-change: transform; /* FLIP: JS временно ставит inline transform */
+}
+body.is-overlay-open .site-page { opacity: 1; transform: none; }
+
+.site-page__top {
+  display: flex; align-items: center; gap: var(--sp-16);
+  padding: var(--sp-16) clamp(16px, 3vw, 32px);
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--hairline);
+}
+.site-page__meta { display: grid; gap: var(--sp-4); min-width: 0; }
+.site-page__meta .overline { margin: 0; }
+.site-page__title { margin: 0; font-size: clamp(20px, 2.4vw, 28px); flex: 1; }
+.site-page__body {
+  overflow-y: auto; padding: clamp(18px, 3vw, 40px);
+  display: grid; gap: var(--sp-40);
+  -webkit-overflow-scrolling: touch;
+}
+/* Контентные блоки внутри «мини-сайта» */
+.sp__head { max-width: 68ch; margin-bottom: var(--sp-12); }
+.sp__lead { color: var(--text-2); font-size: var(--fs-lead); }
+.sp-quote {
+  margin: 0; padding: var(--sp-20) var(--sp-24);
+  border-left: 3px solid var(--primary);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  background: var(--bg-1);
+  font-size: var(--fs-lead); color: var(--text-1);
+}
+.sp-quote footer { margin-top: var(--sp-8); font-size: var(--fs-small); color: var(--text-3); }
+.sp-people { display: grid; gap: var(--sp-16); grid-template-columns: 1fr; }
+
+/* Полоса медиа внутри оверлея — переиспользуем .strip из кита */
+
+/* ------------------------------------------------------------
+   5. АДАПТИВ
+   ------------------------------------------------------------ */
+@media (max-width: 720px) {
+  .fcard__panel { padding: var(--sp-20); border-radius: 20px; }
+  .fcard__title { font-size: clamp(22px, 6vw, 30px); }
+  .fcard__lead { font-size: 15px; }
+  .fcard__num { font-size: 64px; }
+  .fcard__mark { font-size: 140px; }
+  .site-page__body { gap: var(--sp-24); }
+}
+@media (max-width: 768px) {
+  .sp-people { grid-template-columns: 1fr; }
+}
+@media (min-width: 768px) {
+  .site-page__body .cards { grid-template-columns: repeat(2, 1fr); }
+  .sp-people { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .site-page__body .cards { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-height: 660px) {
+  .fcard__panel { font-size: 15px; }
+  .fcard__lead { display: none; } /* на низких экранах экономим вертикаль */
+}
+
+/* ------------------------------------------------------------
+   6. REDUCED-MOTION и «мини»-страховка
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .fcard__panel { will-change: auto; }
+  .site-page { transition: none; }
+  html { scroll-behavior: auto; }
+}

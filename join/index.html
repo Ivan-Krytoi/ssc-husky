@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Записаться — ССК «Хаски»</title>
+  <meta name="description" content="Запись на бесплатное пробное занятие в ССК «Хаски»: 4 поля, 1 минута, ответ в течение 1–2 рабочих дней. FAQ новичка">
+  <link rel="icon" href="/ssc-husky/static/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ssc-husky/static/css/tokens.css?v=1">
+  <link rel="stylesheet" href="/ssc-husky/static/css/style.css?v=1">
+  <link rel="stylesheet" href="/ssc-husky/static/css/pages.css?v=1">
+  
+</head>
+<body class="">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
+
+  <!-- ============ ШАПКА ============ -->
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="/ssc-husky/" aria-current="page">
+        <img class="logo__badge" src="/ssc-husky/static/assets/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_%D0%A5%D0%B0%D1%81%D0%BA%D0%B8_%D0%92%D0%9A.jpg" alt="" width="48" height="48">
+        <span>
+          <span class="logo__name">ССК «ХАСКИ»</span>
+          <span class="logo__sub">студенческий спорт ЮУТУ</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="/ssc-husky/sport/">Спорт</a>
+        <a href="/ssc-husky/schedule/">Календарь</a>
+        <a href="/ssc-husky/results/">Результаты</a>
+        <a href="/ssc-husky/about/">О клубе</a>
+        <a href="/ssc-husky/news/">Новости</a>
+      </nav>
+      <button id="themeToggle" class="icon-btn" type="button" aria-pressed="false" title="Светлая/тёмная тема">🌓<span class="visually-hidden">Переключить тему</span></button>
+      <a class="btn btn--primary" href="/ssc-husky/join/">Записаться</a>
+      <button class="icon-btn burger" type="button" aria-expanded="false">☰<span class="visually-hidden">Меню</span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    
+<section class="section reveal" aria-labelledby="join-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="overline">Раздел · Запись</p>
+      <h1 id="join-title">Записаться на пробное занятие</h1>
+      <p class="section__lead">Опыт не нужен — приходи, научим. Форма и настроение по желанию.</p>
+    </div>
+
+    
+      
+
+      <div class="cta">
+        <h2>Как это работает</h2>
+        <ol class="steps">
+          <li><b aria-hidden="true">1</b> Оставь заявку — 4 поля, 1 минута</li>
+          <li><b aria-hidden="true">2</b> Получи подтверждение — в течение 1–2 рабочих дней</li>
+          <li><b aria-hidden="true">3</b> Приходи на пробу — форма и настроение по желанию</li>
+        </ol>
+
+        <form method="post" action="/ssc-husky/join/" id="joinForm">
+          <div class="field">
+            <label for="f-name">Имя и фамилия</label>
+            <input class="input" id="f-name" name="name" type="text" required autocomplete="name"
+                   placeholder="Иван Петров">
+          </div>
+          <div class="field">
+            <label for="f-group">Вуз/группа</label>
+            <input class="input" id="f-group" name="group" type="text" required
+                   aria-describedby="f-group-hint" placeholder="например, М-103">
+            <p class="field__hint" id="f-group-hint">не студент? пиши «гость»</p>
+          </div>
+          <fieldset class="field" style="border:0; padding:0; margin-bottom: var(--sp-16)">
+            <legend style="font-weight: 600; margin-bottom: var(--sp-8); font-size: 14px; color: rgba(11,15,23,.7); padding: 0">
+              Дисциплина — выбери любую, к чём душа лежит</legend>
+            <div class="chips chip-radios">
+              
+              <label class="chip-radio">
+                <input type="radio" name="discipline" value="Мини-футбол" checked>
+                <span class="chip">Мини-футбол</span>
+              </label>
+              
+              <label class="chip-radio">
+                <input type="radio" name="discipline" value="Баскетбол 3×3" >
+                <span class="chip">Баскетбол 3×3</span>
+              </label>
+              
+              <label class="chip-radio">
+                <input type="radio" name="discipline" value="Волейбол" >
+                <span class="chip">Волейбол</span>
+              </label>
+              
+              <label class="chip-radio">
+                <input type="radio" name="discipline" value="Кросс" >
+                <span class="chip">Кросс</span>
+              </label>
+              
+              <label class="chip-radio">
+                <input type="radio" name="discipline" value="Другое" >
+                <span class="chip">Другое</span>
+              </label>
+              
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="f-contact">Телефон, VK или email</label>
+            <input class="input" id="f-contact" name="contact" type="text" required
+                   aria-describedby="f-contact-hint" placeholder="+7 ___ ___-__-__ / vk.me/… / ivan@mail.ru">
+            <p class="field__hint" id="f-contact-hint">как вам удобнее — так и свяжемся</p>
+          </div>
+          <button class="btn btn--plate" type="submit">Отправить заявку <span class="arrow" aria-hidden="true">→</span></button>
+          <p class="cta__note" style="margin-top: var(--sp-12)">Заявка попадает в базу клуба. Спам не отправляем — только подтверждение пробного.</p>
+        </form>
+        <p class="cta__note">Удобнее написать напрямую? Сообщество ВКонтакте: vk.ru/ssc_husky_official</p>
+      </div>
+    
+
+    <!-- FAQ новичка (аккордеон) -->
+    <div class="section__head" style="margin-top: var(--sp-48)">
+      <h2>Вопросы новичка</h2>
+    </div>
+    <details class="faq">
+      <summary><b>Могу не знать, как играть?</b></summary>
+      <p>Да, приходим с любым уровнем. Пробное занятие — бесплатное знакомство с командой.</p>
+    </details>
+    <details class="faq">
+      <summary><b>Есть ли группы для новичков?</b></summary>
+      <p><span class="badge badge--warn">уточняется</span> Уточняем у клуба набор новичков на сезон 2026/27.</p>
+    </details>
+    <details class="faq">
+      <summary><b>Нужна ли спортивная форма?</b></summary>
+      <p>Нет, форма и настроение по желанию. <span class="badge badge--warn">уточняется</span></p>
+    </details>
+    <details class="faq">
+      <summary><b>Кому писать, если не отвечают?</b></summary>
+      <p>Напиши напрямую руководителю клуба Сергею Александровичу Васильеву через сообщество ВК: <a href="https://vk.ru/ssc_husky_official" rel="noopener">vk.ru/ssc_husky_official</a>. <span class="badge badge--warn">контакт уточняется</span></p>
+    </details>
+  </div>
+</section>
+
+  </main>
+
+  <!-- ============ ФУТЕР ============ -->
+  <footer class="footer">
+    <div class="container footer__cols">
+      <div>
+        <h3>ССК «Хаски»</h3>
+        <p>Студенческий спортивный клуб ЮУТУ. Работаем с 2012 года — делаем студенческий спорт Южного Урала громче.</p>
+        <p>Комсомольский проспект, 113а, Челябинск</p>
+      </div>
+      <div>
+        <h3>Разделы</h3>
+        <a href="/ssc-husky/about/">О клубе</a><br>
+        <a href="/ssc-husky/sport/">Спорт</a><br>
+        <a href="/ssc-husky/schedule/">Календарь</a><br>
+        <a href="/ssc-husky/results/">Результаты</a><br>
+        <a href="/ssc-husky/join/">Как записаться</a>
+      </div>
+      <div>
+        <h3>Контакты</h3>
+        <a href="https://vk.ru/ssc_husky_official" rel="noopener">ВКонтакте</a><br>
+        <a href="https://vk.ru/asb.tankograd" rel="noopener">Трансляции матчей</a><br>
+        <a href="/ssc-husky/join/">Форма записи</a>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <span>© ССК «Хаски», 2026. Данные: сообщество ВК + БД сайта.</span>
+      <span>#ССК_Хаски #ЮУТУ #Победы_ХАСКИ</span>
+    </div>
+  </footer>
+
+  <script src="/ssc-husky/static/js/app.js?v=1"></script>
+</body>
+</html>
