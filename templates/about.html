@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}О клубе — {{ config.TITLE_SUFFIX }}{% endblock %}
+
+{% block content %}
+<section class="section reveal" aria-labelledby="about-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="overline">Раздел · О клубе</p>
+      <h1 id="about-title">ССК «Хаски» — не просто команда, а семья</h1>
+      <p class="section__lead">С 2012 года студенческий спортивный клуб работает как самостоятельное структурное подразделение Южно-Уральского технологического университета.</p>
+    </div>
+    <blockquote class="sp-quote">
+      «Хаски — это не просто команда, а настоящая семья. Здесь каждый подставит плечо на пути к победе!»
+      <footer>цитата сообщества ССК «Хаски», ВКонтакте</footer>
+    </blockquote>
+    <figure style="margin-top: var(--sp-24)">
+      <img src="{{ url_for('static', filename='assets/Баннер_обложка_ВК.jpg') }}" width="911" height="364" alt="Обложка сообщества ССК «Хаски»: спортивные мячи и слоган «Не жди момента. Действуй!»">
+    </figure>
+  </div>
+</section>
+
+<section class="section reveal" aria-labelledby="prior-title">
+  <div class="container">
+    <div class="section__head"><h2 id="prior-title">Приоритеты клуба</h2></div>
+    <ul class="brand-list">
+      <li>формирование ценностного отношения к здоровью и ЗОЖ;</li>
+      <li>установка на систематические занятия физкультурой и спортом;</li>
+      <li>организация физкультурно-спортивных мероприятий;</li>
+      <li>участие студентов в соревнованиях разного уровня;</li>
+      <li>профилактика асоциального поведения.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section reveal" aria-labelledby="people-title">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="people-title">Руководство</h2>
+      <span class="badge badge--uni">участник номинации «Спортивное сообщество года»</span>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <span class="card__icon" aria-hidden="true">👤</span>
+        <h3>Сергей Александрович Васильев</h3>
+        <p>Руководитель клуба. <span class="badge badge--warn">фото уточняется</span></p>
+      </div>
+      <div class="card">
+        <span class="card__icon" aria-hidden="true">👤</span>
+        <h3>Снежана Андреевна Комиссарова</h3>
+        <p>Специалист отдела по воспитательной работе и молодёжной политике.</p>
+      </div>
+    </div>
+    <p class="section__lead" style="margin-top: var(--sp-24)">Партнёры и среда: РССС, проект «УниверЛига Регионов», Уральский региональный колледж.</p>
+  </div>
+</section>
+
+<section class="section reveal" aria-labelledby="medal-title">
+  <div class="container">
+    <div class="section__head"><h2 id="medal-title">Наши медали</h2></div>
+    <div class="table-wrap">
+      <table class="table">
+        <caption>Актуальные медальные строки из БД сайта</caption>
+        <thead><tr><th scope="col">Место</th><th scope="col">Группа</th><th scope="col">Турнир</th></tr></thead>
+        <tbody>
+          {% for m in medals %}<tr><td class="pos">{{ m.place }}</td><td>{{ m.group_name }}</td><td>{{ m.competition }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top: var(--sp-24)"><a class="btn btn--primary" href="{{ url_for('forms.join') }}">Хочу в «Хаски» — записаться</a></p>
+  </div>
+</section>
+{% endblock %}

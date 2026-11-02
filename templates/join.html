@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Записаться — {{ config.TITLE_SUFFIX }}{% endblock %}
+{% block description %}Запись на бесплатное пробное занятие в ССК «Хаски»: 4 поля, 1 минута, ответ в течение 1–2 рабочих дней. FAQ новичка{% endblock %}
+
+{% block content %}
+<section class="section reveal" aria-labelledby="join-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="overline">Раздел · Запись</p>
+      <h1 id="join-title">Записаться на пробное занятие</h1>
+      <p class="section__lead">Опыт не нужен — приходи, научим. Форма и настроение по желанию.</p>
+    </div>
+
+    {% if request.args.get('sent') %}
+      <!-- Успех: заявка реально записана в БД SQLite -->
+      <div class="cta" id="joinSuccess" tabindex="-1">
+        <h2>🐾 Заявка принята!</h2>
+        <p>Мы свяжемся с вами в течение 1–2 рабочих дней. Заявка сохранена в базе клуба.</p>
+        <p class="cta__note">Удобнее написать напрямую? Сообщество ВКонтакте: vk.ru/ssc_husky_official</p>
+        <p style="margin-top: var(--sp-16)">
+          <a class="btn btn--plate" href="{{ url_for('pages.index') }}">На главную</a>
+          <a class="btn btn--plate" href="https://vk.ru/ssc_husky_official" rel="noopener">Мы в ВКонтакте</a>
+        </p>
+      </div>
+    {% else %}
+      {% if request.args.get('error') %}
+        <div class="notice notice--error" role="alert">
+          <b>Заявка не отправлена.</b> Заполните имя, группу и контакт — и попробуйте снова.
+        </div>
+      {% endif %}
+
+      <div class="cta">
+        <h2>Как это работает</h2>
+        <ol class="steps">
+          <li><b aria-hidden="true">1</b> Оставь заявку — 4 поля, 1 минута</li>
+          <li><b aria-hidden="true">2</b> Получи подтверждение — в течение 1–2 рабочих дней</li>
+          <li><b aria-hidden="true">3</b> Приходи на пробу — форма и настроение по желанию</li>
+        </ol>
+
+        <form method="post" action="{{ url_for('forms.join') }}" id="joinForm">
+          <div class="field">
+            <label for="f-name">Имя и фамилия</label>
+            <input class="input" id="f-name" name="name" type="text" required autocomplete="name"
+                   placeholder="Иван Петров">
+          </div>
+          <div class="field">
+            <label for="f-group">Вуз/группа</label>
+            <input class="input" id="f-group" name="group" type="text" required
+                   aria-describedby="f-group-hint" placeholder="например, М-103">
+            <p class="field__hint" id="f-group-hint">не студент? пиши «гость»</p>
+          </div>
+          <fieldset class="field" style="border:0; padding:0; margin-bottom: var(--sp-16)">
+            <legend style="font-weight: 600; margin-bottom: var(--sp-8); font-size: 14px; color: rgba(11,15,23,.7); padding: 0">
+              Дисциплина — выбери любую, к чём душа лежит</legend>
+            <div class="chips chip-radios">
+              {% for d in ['Мини-футбол', 'Баскетбол 3×3', 'Волейбол', 'Кросс', 'Другое'] %}
+              <label class="chip-radio">
+                <input type="radio" name="discipline" value="{{ d }}" {% if loop.first %}checked{% endif %}>
+                <span class="chip">{{ d }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="f-contact">Телефон, VK или email</label>
+            <input class="input" id="f-contact" name="contact" type="text" required
+                   aria-describedby="f-contact-hint" placeholder="+7 ___ ___-__-__ / vk.me/… / ivan@mail.ru">
+            <p class="field__hint" id="f-contact-hint">как вам удобнее — так и свяжемся</p>
+          </div>
+          <button class="btn btn--plate" type="submit">Отправить заявку <span class="arrow" aria-hidden="true">→</span></button>
+          <p class="cta__note" style="margin-top: var(--sp-12)">Заявка попадает в базу клуба. Спам не отправляем — только подтверждение пробного.</p>
+        </form>
+        <p class="cta__note">Удобнее написать напрямую? Сообщество ВКонтакте: vk.ru/ssc_husky_official</p>
+      </div>
+    {% endif %}
+
+    <!-- FAQ новичка (аккордеон) -->
+    <div class="section__head" style="margin-top: var(--sp-48)">
+      <h2>Вопросы новичка</h2>
+    </div>
+    <details class="faq">
+      <summary><b>Могу не знать, как играть?</b></summary>
+      <p>Да, приходим с любым уровнем. Пробное занятие — бесплатное знакомство с командой.</p>
+    </details>
+    <details class="faq">
+      <summary><b>Есть ли группы для новичков?</b></summary>
+      <p><span class="badge badge--warn">уточняется</span> Уточняем у клуба набор новичков на сезон 2026/27.</p>
+    </details>
+    <details class="faq">
+      <summary><b>Нужна ли спортивная форма?</b></summary>
+      <p>Нет, форма и настроение по желанию. <span class="badge badge--warn">уточняется</span></p>
+    </details>
+    <details class="faq">
+      <summary><b>Кому писать, если не отвечают?</b></summary>
+      <p>Напиши напрямую руководителю клуба Сергею Александровичу Васильеву через сообщество ВК: <a href="https://vk.ru/ssc_husky_official" rel="noopener">vk.ru/ssc_husky_official</a>. <span class="badge badge--warn">контакт уточняется</span></p>
+    </details>
+  </div>
+</section>
+{% endblock %}

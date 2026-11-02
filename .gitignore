@@ -1,0 +1,13 @@
+# Виртуальное окружение
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Локальная база SQLite — жюри создаёт её командой: flask init-db (из schema.sql)
+instance/
+
+# Прочее
+.DS_Store
+Thumbs.db

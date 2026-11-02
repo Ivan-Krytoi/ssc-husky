@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ССК «Хаски» — студенческий спорт Южного Урала{% endblock %}</title>
+  <meta name="description" content="{% block description %}Студенческий спортивный клуб ЮУТУ «Хаски»: спартакиада вуза, сборные, 6 дисциплин, запись на пробное занятие. Челябинск{% endblock %}">
+  <link rel="icon" href="{{ url_for('static', filename='assets/favicon.svg') }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css', v=1) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=1) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css', v=1) }}">
+  {% block css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
+
+  <!-- ============ ШАПКА ============ -->
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="{{ url_for('pages.index') }}" aria-current="page">
+        <img class="logo__badge" src="{{ url_for('static', filename='assets/Логотип_Хаски_ВК.jpg') }}" alt="" width="48" height="48">
+        <span>
+          <span class="logo__name">ССК «ХАСКИ»</span>
+          <span class="logo__sub">студенческий спорт ЮУТУ</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="{{ url_for('pages.sport') }}">Спорт</a>
+        <a href="{{ url_for('pages.schedule') }}">Календарь</a>
+        <a href="{{ url_for('pages.results') }}">Результаты</a>
+        <a href="{{ url_for('pages.about') }}">О клубе</a>
+        <a href="{{ url_for('pages.news') }}">Новости</a>
+      </nav>
+      <button id="themeToggle" class="icon-btn" type="button" aria-pressed="false" title="Светлая/тёмная тема">🌓<span class="visually-hidden">Переключить тему</span></button>
+      <a class="btn btn--primary" href="{{ url_for('forms.join') }}">Записаться</a>
+      <button class="icon-btn burger" type="button" aria-expanded="false">☰<span class="visually-hidden">Меню</span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ============ ФУТЕР ============ -->
+  <footer class="footer">
+    <div class="container footer__cols">
+      <div>
+        <h3>ССК «Хаски»</h3>
+        <p>Студенческий спортивный клуб ЮУТУ. Работаем с 2012 года — делаем студенческий спорт Южного Урала громче.</p>
+        <p>Комсомольский проспект, 113а, Челябинск</p>
+      </div>
+      <div>
+        <h3>Разделы</h3>
+        <a href="{{ url_for('pages.about') }}">О клубе</a><br>
+        <a href="{{ url_for('pages.sport') }}">Спорт</a><br>
+        <a href="{{ url_for('pages.schedule') }}">Календарь</a><br>
+        <a href="{{ url_for('pages.results') }}">Результаты</a><br>
+        <a href="{{ url_for('forms.join') }}">Как записаться</a>
+      </div>
+      <div>
+        <h3>Контакты</h3>
+        <a href="https://vk.ru/ssc_husky_official" rel="noopener">ВКонтакте</a><br>
+        <a href="https://vk.ru/asb.tankograd" rel="noopener">Трансляции матчей</a><br>
+        <a href="{{ url_for('forms.join') }}">Форма записи</a>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <span>© ССК «Хаски», 2026. Данные: сообщество ВК + БД сайта.</span>
+      <span>#ССК_Хаски #ЮУТУ #Победы_ХАСКИ</span>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js', v=1) }}"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Новости и медиа — {{ config.TITLE_SUFFIX }}{% endblock %}
+
+{% block content %}
+<section class="section reveal" aria-labelledby="news-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="overline">Раздел · Новости и медиа</p>
+      <h1 id="news-title">Новости, фото и трансляции</h1>
+      <p class="section__lead">Лента ведётся в сообществе ВКонтакте. Здесь — основные события; полный архив фото (430+) хранится у клуба.</p>
+    </div>
+
+    {% if news_list %}
+    <div class="cards news">
+      {% for n in news_list %}
+      <article class="card news-card">
+        <img class="news-card__img" src="{{ url_for('static', filename='assets/' + n.image) }}" width="640" height="256"
+             alt="Фото к новости: {{ n.title }}" loading="lazy">
+        <div class="news-card__body">
+          <header>
+            <p class="news-card__date">{{ n.date }} · {{ n.category }}</p>
+            <h2 class="card__title" style="font-size: var(--fs-h3)">{{ n.title }}</h2>
+          </header>
+          <p>{{ n.body }}</p>
+          <a class="btn btn--secondary" href="https://vk.ru/ssc_husky_official" rel="noopener">Обсудить в ВК <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="section__lead">Новости скоро появятся — заглядывай в <a href="https://vk.ru/ssc_husky_official" rel="noopener">сообщество клуба</a>.</p>
+    {% endif %}
+
+    <p style="margin-top: var(--sp-24)">
+      <a class="btn btn--primary" href="https://vk.ru/ssc_husky_official" rel="noopener">Смотреть всю ленту в ВК</a>
+      <a class="btn btn--ghost" href="https://vk.ru/asb.tankograd" rel="noopener">Трансляции матчей</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

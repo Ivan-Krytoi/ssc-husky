@@ -1,0 +1,135 @@
+/* ============================================================
+   ССК «ХАСКИ» — ДИЗАЙН-ТОКЕНЫ
+   Подключать ПЕРВЫМ на каждой странице сайта.
+   Тёмная тема — по умолчанию (со стороны логотипа):
+   чёрный лёд + бирюза #23C2DE + фиолет #7B61FF.
+   Светлая тема (класс .theme-light на <html>) — со стороны
+   баннера сообщества: азур #08A2E2, лёд #E2F5FE.
+   ============================================================ */
+
+:root {
+  /* ---- Цвета: поверхности (тёмная тема) ---- */
+  --bg-0: #0B0F17;          /* основа страницы — «ночной лёд» */
+  --bg-1: #10161F;          /* карточки, секции */
+  --bg-2: #161D28;          /* вложенные блоки, поля форм, hover-слои */
+
+  /* ---- Цвета: фирменные акценты ---- */
+  --primary: #23C2DE;       /* бирюза «энергия Хаски» (с логотипа) */
+  --primary-hover: #4FD6EC; /* hover/активные состояния на тёмном */
+  --primary-deep: #0F7A99;  /* бирюза для ТЕКСТА на светлом фоне (AA) */
+  --secondary: #7B61FF;     /* фиолет: бейджи «УниверЛига», вторичные акценты */
+  --secondary-soft: #9F87FF;/* фиолет для мелкого текста на тёмном (AA) */
+  --secondary-deep: #4B2FBF;/* фиолет для текста на светлом (AA) */
+
+  /* ---- Цвета: баннерная (светло-голубая) линейка ---- */
+  --azure-1: #08A2E2;       /* насыщенный азур с обложки сообщества */
+  --azure-2: #44C1EF;       /* переход градиента баннера */
+  --azure-soft: #9EDAED;    /* светло-голубой: мягкие заливки */
+  --ice: #E2F5FE;           /* «чистый лёд»: фон светлой темы */
+  --azure-deep: #057FAD;    /* фон плит ПОД белый текст (AA ≈4.5:1) */
+
+  /* ---- Цвета: текст (тёмная тема) ---- */
+  --text-1: #F2F5F9;        /* основной текст, заголовки */
+  --text-2: #A7B4C2;        /* подписи, мета */
+  --text-3: #6E7A88;        /* отключённые элементы, подсказки */
+
+  /* ---- Цвета: семантика ---- */
+  --success: #35C48D;       /* победы, 1 место */
+  --warning: #EFB93F;       /* «Перенесено» */
+  --error: #F4635C;         /* ошибки форм */
+
+  /* ---- Градиенты ---- */
+  --grad-bolt: linear-gradient(135deg, #23C2DE 0%, #7B61FF 100%);      /* «молния» логотипа */
+  --grad-banner: linear-gradient(135deg, #08A2E2 0%, #44C1EF 100%);    /* азур баннера */
+  --grad-text: linear-gradient(90deg, #23C2DE, #9F87FF);               /* слово в заголовке */
+  --glow-hero: radial-gradient(ellipse at 75% 20%, rgba(35,194,222,.16), transparent 55%);
+
+  /* ---- Типографика ---- */
+  --font-display: 'Unbounded', 'Arial Black', sans-serif;
+  --font-text: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fs-h1: clamp(32px, 5vw, 56px);
+  --fs-h2: clamp(26px, 3.5vw, 40px);
+  --fs-h3: clamp(20px, 2.2vw, 24px);
+  --fs-lead: clamp(17px, 1.6vw, 20px);
+  --fs-body: 16px;
+  --fs-small: 13px;
+  --fs-overline: 12px;
+  --fs-stat: clamp(40px, 5vw, 72px);
+  --lh-tight: 1.1;
+  --lh-heading: 1.2;
+  --lh-body: 1.65;
+
+  /* ---- Отступы (кратно 4) ---- */
+  --sp-4: 4px;  --sp-8: 8px;  --sp-12: 12px; --sp-16: 16px; --sp-20: 20px;
+  --sp-24: 24px; --sp-32: 32px; --sp-40: 40px; --sp-48: 48px; --sp-64: 64px;
+  --sp-80: 80px; --sp-112: 112px;
+
+  /* ---- Сетка ---- */
+  --container: 1240px;
+  --gutter: 24px;
+
+  /* ---- Формы/радиусы ---- */
+  --radius-card: 16px;
+  --radius-btn: 12px;
+  --radius-pill: 999px;
+
+  /* ---- Тени и свечение ---- */
+  --shadow-1: 0 8px 24px rgba(0,0,0,.45);
+  --glow-primary: 0 0 32px rgba(35,194,222,.35);
+
+  /* ---- Цели нажатия и движение ---- */
+  --tap: 44px;                       /* минимальная площадь клика, WCAG 2.5.5 */
+  --ease: cubic-bezier(.2,.7,.3,1);
+  --dur: 200ms;
+  --dur-slow: 400ms;
+
+  /* ---- Линии ---- */
+  --hairline: rgba(242,245,249,.08);
+}
+
+/* ==================== СВЕТЛАЯ ТЕМА ====================
+   Включается классом .theme-light на <html> (кнопка 🌓).
+   Палитра — от баннера сообщества. */
+.theme-light {
+  --bg-0: #FFFFFF;
+  --bg-1: #F3F6FA;
+  --bg-2: #E9EEF5;
+
+  --primary: #0F7A99;        /* бирюза как ТЕКСТ/кнопки на светлом */
+  --primary-hover: #0B5C77;
+  --secondary: #4B2FBF;
+  --secondary-soft: #4B2FBF; /* на светлом фиолетовый текст — тёмный */
+
+  --text-1: #12181F;
+  --text-2: #46576A;
+  --text-3: #8594A4;
+  --hairline: rgba(18,24,31,.10);
+
+  --shadow-1: 0 8px 24px rgba(22,41,64,.12);
+  --glow-primary: 0 0 32px rgba(15,122,153,.25);
+}
+
+/* Опционально: «баннерная» светлая вариация — лёд с голубизной.
+   Включить можно классами .theme-light.banner на <html>. */
+.theme-light.banner {
+  --bg-1: #E2F5FE;
+  --bg-2: #D4EDFD;
+}
+
+/* ==================== УТИЛИТЫ ==================== */
+.container { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.grad-text {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+/* Доступность: только для вспомогательных элементов */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+/* Уважение к настройкам пользователя */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

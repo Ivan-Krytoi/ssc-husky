@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Календарь — {{ config.TITLE_SUFFIX }}{% endblock %}
+
+{% block content %}
+<section class="section reveal" aria-labelledby="cal-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="overline">Раздел · Календарь</p>
+      <h1 id="cal-title">Тренировки и события сезона</h1>
+      <p class="section__lead">Спартакиада вуза, Универсиада и внутренние туры. Даты обновляются по протоколам клуба — у событий без даты стоит пометка «уточняется».</p>
+    </div>
+
+    <!-- Фильтры: статус (вся/будущие/прошедшие) — JS в app.js -->
+    <div class="chips" data-filter-group role="group" aria-label="Фильтр событий по статусу" style="margin-bottom: var(--sp-16)">
+      <button class="chip chip--active" type="button" data-filter="all">Все события</button>
+      <button class="chip" type="button" data-filter="done">Состоялись</button>
+      <button class="chip" type="button" data-filter="soon">Скоро</button>
+      <button class="chip" type="button" data-filter="tbd">Дата уточняется</button>
+    </div>
+
+    {% if events %}
+    <ul class="events">
+      {% for e in events %}
+      <li class="event" data-status="{{ e.status }}">
+        <div class="event__day"{% if not e.event_date %} aria-hidden="true"{% endif %}>
+          {{ e.event_date.split('.')[0] if e.event_date else '?' }}
+          <span class="event__month">{{ e.event_date.split('.')[1] if e.event_date else 'уточняется' }}</span>
+        </div>
+        <div class="event__body">
+          <h2 style="font-size: var(--fs-h3)">{{ e.title }}</h2>
+          <p class="event__meta">{{ e.discipline }}{% if e.place %} · {{ e.place }}{% endif %}</p>
+          {% if e.result %}<p class="event__meta"><b>{{ e.result }}</b></p>{% endif %}
+        </div>
+        {% if e.status == 'done' %}<span class="badge badge--win">состоялось</span>
+        {% elif e.status == 'soon' %}<span class="badge badge--live">скоро</span>
+        {% else %}<span class="badge badge--warn">дата уточняется</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="section__lead">События скоро появятся — подпишись на <a href="https://vk.ru/ssc_husky_official" rel="noopener">VK клуба</a>, чтобы не пропустить старт.</p>
+    {% endif %}
+
+    <p style="margin-top: var(--sp-24)">
+      <a class="btn btn--primary" href="{{ url_for('forms.join') }}">Записаться на пробное занятие</a>
+      <a class="btn btn--ghost" href="https://vk.ru/ssc_husky_official" rel="noopener">Мы в ВКонтакте</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

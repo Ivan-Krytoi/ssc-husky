@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}404 — страница не найдена — {{ config.TITLE_SUFFIX }}{% endblock %}
+
+{% block content %}
+<section class="section section-404" aria-labelledby="e404-title">
+  <div class="container" style="text-align: center">
+    <p class="husky-404" aria-hidden="true">🐾</p>
+    <h1 id="e404-title">Дорожка оборвалась…</h1>
+    <p class="section__lead" style="max-width: 520px; margin-inline: auto">
+      Такой страницы на трассе нет. Псы свернули не туда — но это починим: выбери направление ниже.
+    </p>
+    <p style="margin-top: var(--sp-24)">
+      <a class="btn btn--primary" href="{{ url_for('pages.index') }}">На главную <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="btn btn--ghost" href="https://vk.ru/ssc_husky_official" rel="noopener">Мы в ВКонтакте</a>
+    </p>
+    <nav class="chips" aria-label="Быстрые разделы" style="margin-top: var(--sp-24); justify-content: center">
+      <a class="chip" href="{{ url_for('pages.sport') }}">Спорт</a>
+      <a class="chip" href="{{ url_for('pages.schedule') }}">Календарь</a>
+      <a class="chip" href="{{ url_for('pages.results') }}">Результаты</a>
+      <a class="chip" href="{{ url_for('forms.join') }}">Записаться</a>
+    </nav>
+  </div>
+</section>
+{% endblock %}

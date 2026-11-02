@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block body_class %}js{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/home-cards.css', v=2) }}">{% endblock %}
+
+{% block content %}
+<!-- ============ ПРОЛЁТ КАРТОЧЕК ============ -->
+<section class="deck" id="deck" aria-label="Пролёт карточек — обзор разделов сайта">
+  <div class="deck__stage" id="deckStage">
+
+    <!-- 01 · О клубе (hero) -->
+    <article class="fcard" style="--i:0">
+      <a class="fcard__panel" href="{{ url_for('pages.about') }}">
+        <span class="fcard__num" aria-hidden="true">01</span>
+        <span class="fcard__mark" aria-hidden="true">🐾</span>
+        <header class="fcard__head">
+          <p class="overline">Главная · ССК «Хаски»</p>
+          <span class="badge badge--uni">с 2012 года</span>
+        </header>
+        <h1 class="fcard__title">Не жди момента. <span class="grad-text">Действуй!</span></h1>
+        <p class="fcard__lead">«Хаски» — спортивный клуб Южно-Уральского технологического университета. Один клуб — вся спартакиада вуза и сборные Южного Урала.</p>
+        <div class="fcard__body">
+          <ul class="fcard__facts">
+            <li class="fcard__fact"><b>2012</b> год основания клуба</li>
+            <li class="fcard__fact"><b>{{ stats | selectattr('key','equalto','disciplines') | map(attribute='value') | first }}</b> спортивных дисциплин</li>
+            <li class="fcard__fact"><b>Челябинск</b> Комсомольский пр., 113а</li>
+          </ul>
+        </div>
+        <footer class="fcard__foot">
+          <span class="btn btn--primary" aria-hidden="true">Открыть раздел «О клубе» <span class="arrow">→</span></span>
+          <span class="fcard__foot-hint">миссия · история · команда</span>
+        </footer>
+      </a>
+    </article>
+
+    <!-- 02 · Дисциплины -->
+    <article class="fcard" style="--i:1">
+      <a class="fcard__panel" href="{{ url_for('pages.sport') }}">
+        <span class="fcard__num" aria-hidden="true">02</span>
+        <span class="fcard__mark" aria-hidden="true">🏀</span>
+        <header class="fcard__head">
+          <p class="overline">Раздел · Спорт</p>
+          <span class="badge badge--win">1 место · 3×3 Универсиада</span>
+        </header>
+        <h2 class="fcard__title">Шесть направлений спорта</h2>
+        <p class="fcard__lead">Мини-футбол, баскетбол 3×3, волейбол, фиджитал-спорт, дартс и кросс — выбирай своё. Внутри каждого: расписание, состав и запись.</p>
+        <div class="fcard__body">
+          <div class="fcard__chips">
+            {% for d in disciplines %}<span class="chip">{{ d.icon }} {{ d.name }}</span>{% endfor %}
+          </div>
+          <ul class="fcard__facts">
+            <li class="fcard__fact"><b>1 место</b> баскетбол 3×3, областная Универсиада 2026</li>
+            <li class="fcard__fact"><b>4 место</b> командный кросс — 12 человек, Универсиада</li>
+            <li class="fcard__fact"><b>Золото</b> мини-футбол спартакиады — группа М-103</li>
+          </ul>
+        </div>
+        <footer class="fcard__foot">
+          <span class="btn btn--primary" aria-hidden="true">Все направления <span class="arrow">→</span></span>
+          <span class="fcard__foot-hint">расписание и запись — внутри</span>
+        </footer>
+      </a>
+    </article>
+
+    <!-- 03 · Календарь -->
+    <article class="fcard" style="--i:2">
+      <a class="fcard__panel" href="{{ url_for('pages.schedule') }}">
+        <span class="fcard__num" aria-hidden="true">03</span>
+        <span class="fcard__mark" aria-hidden="true">📅</span>
+        <header class="fcard__head">
+          <p class="overline">Раздел · Календарь</p>
+          <span class="badge badge--warn">даты уточняются</span>
+        </header>
+        <h2 class="fcard__title">Тренировки и события сезона</h2>
+        <p class="fcard__lead">Спартакиада вуза, Универсиада и внутренние туры. Даты обновляются по протоколам клуба.</p>
+        <div class="fcard__body">
+          <ul class="fcard__facts">
+            {% for e in events %}
+            <li class="fcard__fact"><b>{{ e.event_date or 'дата?' }}</b> {{ e.title }}{% if e.result %} — {{ e.result }}{% endif %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <footer class="fcard__foot">
+          <span class="btn btn--primary" aria-hidden="true">Весь календарь <span class="arrow">→</span></span>
+          <span class="fcard__foot-hint">фильтры по спорту и статусу</span>
+        </footer>
+      </a>
+    </article>
+
+    <!-- 04 · Результаты -->
+    <article class="fcard" style="--i:3">
+      <a class="fcard__panel" href="{{ url_for('pages.results') }}">
+        <span class="fcard__num" aria-hidden="true">04</span>
+        <span class="fcard__mark" aria-hidden="true">🏆</span>
+        <header class="fcard__head">
+          <p class="overline">Раздел · Результаты</p>
+          <span class="badge badge--win">обновлено {{ medals[0].updated_at if medals else '—' }}</span>
+        </header>
+        <h2 class="fcard__title">Результаты и медали</h2>
+        <p class="fcard__lead">Турнирная таблица внутренней спартакиады и цифры клуба — честные данные из протоколов.</p>
+        <div class="fcard__body">
+          <ul class="fcard__facts">
+            {% for m in medals %}
+            <li class="fcard__fact"><b>{{ m.place }}</b> {{ m.group_name }} — {{ m.competition.split(',')[-1] | trim }}</li>
+            {% endfor %}
+            <li class="fcard__fact"><b>{{ stats | selectattr('key','equalto','photos') | map(attribute='value') | first }}+</b> фото в архиве клуба</li>
+          </ul>
+        </div>
+        <footer class="fcard__foot">
+          <span class="btn btn--primary" aria-hidden="true">Таблицы и медали <span class="arrow">→</span></span>
+          <span class="fcard__foot-hint">Хаски в цифрах — внутри</span>
+        </footer>
+      </a>
+    </article>
+
+    <!-- 05 · Записаться (акцентная карточка) -->
+    <article class="fcard" style="--i:4">
+      <a class="fcard__panel fcard__panel--accent" href="{{ url_for('forms.join') }}">
+        <span class="fcard__num" aria-hidden="true">05</span>
+        <span class="fcard__mark" aria-hidden="true">📝</span>
+        <header class="fcard__head">
+          <p class="overline">Раздел · Запись</p>
+          <span class="badge">бесплатное пробное</span>
+        </header>
+        <h2 class="fcard__title">Записаться на пробное занятие</h2>
+        <p class="fcard__lead">Опыт не нужен — приходи, научим. Форма и настроение по желанию.</p>
+        <div class="fcard__body">
+          <div class="fcard__steps">
+            <span><b aria-hidden="true">1</b> Оставь заявку — 1 минута</span>
+            <span><b aria-hidden="true">2</b> Подтверждение за 1–2 дня</span>
+            <span><b aria-hidden="true">3</b> Приходи на пробу</span>
+          </div>
+          <div class="fcard__chips">
+            <span class="chip">Мини-футбол</span>
+            <span class="chip">Баскетбол 3×3</span>
+            <span class="chip">Волейбол</span>
+            <span class="chip">Кросс</span>
+            <span class="chip">Другое</span>
+          </div>
+        </div>
+        <footer class="fcard__foot">
+          <span class="btn fcard__open" aria-hidden="true">Открыть форму записи <span class="arrow">→</span></span>
+          <span class="fcard__foot-hint">ответим в течение 1–2 рабочих дней</span>
+        </footer>
+      </a>
+    </article>
+
+    <!-- 06 · Новости и медиа -->
+    <article class="fcard" style="--i:5">
+      <a class="fcard__panel" href="{{ url_for('pages.news') }}">
+        <span class="fcard__num" aria-hidden="true">06</span>
+        <span class="fcard__mark" aria-hidden="true">📷</span>
+        <header class="fcard__head">
+          <p class="overline">Раздел · Новости и медиа</p>
+          <span class="badge badge--live">свежее в ВК</span>
+        </header>
+        <h2 class="fcard__title">Новости, фото и трансляции</h2>
+        <p class="fcard__lead">Лента клуба, 430+ фото в архиве и матчи в прямом эфире VK.</p>
+        <div class="fcard__body">
+          <ul class="fcard__facts">
+            {% for n in news_list %}
+            <li class="fcard__fact"><b>{{ n.date[:5] }}</b> {{ n.title }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <footer class="fcard__foot">
+          <span class="btn btn--primary" aria-hidden="true">Лента и трансляции <span class="arrow">→</span></span>
+          <span class="fcard__foot-hint">vk.ru/ssc_husky_official</span>
+        </footer>
+      </a>
+    </article>
+  </div>
+
+  <!-- Управление пролётом -->
+  <div class="deck__ui">
+    <button id="flightPause" class="icon-btn" type="button" aria-pressed="false" title="Остановить полёт"><span id="flightGlyph" aria-hidden="true">⏸</span><span class="visually-hidden" id="flightLabel">Остановить полёт карточек</span></button>
+    <a class="btn btn--ghost" href="#sections">К разделам <span class="arrow" aria-hidden="true">↓</span></a>
+  </div>
+</section>
+
+<!-- ============ ВСЕ РАЗДЕЛЫ (спокойный список) ============ -->
+<section class="section reveal" id="sections" aria-labelledby="all-title">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="all-title">Все разделы сайта</h2>
+      <p class="section__lead">Тот же набор «стаи» — обычным списком: если хочется без полёта.</p>
+    </div>
+    <ul class="tiles">
+      <li><a class="tile" href="{{ url_for('pages.about') }}"><span class="tile__icon" aria-hidden="true">🐾</span><span>О клубе<span class="tile__hint">миссия, история, команда</span></span></a></li>
+      <li><a class="tile" href="{{ url_for('pages.sport') }}"><span class="tile__icon" aria-hidden="true">🏀</span><span>Спорт<span class="tile__hint">6 дисциплин клуба</span></span></a></li>
+      <li><a class="tile" href="{{ url_for('pages.schedule') }}"><span class="tile__icon" aria-hidden="true">📅</span><span>Календарь<span class="tile__hint">тренировки и события</span></span></a></li>
+      <li><a class="tile" href="{{ url_for('pages.results') }}"><span class="tile__icon" aria-hidden="true">🏆</span><span>Результаты<span class="tile__hint">таблицы и медали</span></span></a></li>
+      <li><a class="tile" href="{{ url_for('forms.join') }}"><span class="tile__icon" aria-hidden="true">📝</span><span>Как записаться<span class="tile__hint">форма и FAQ новичка</span></span></a></li>
+      <li><a class="tile" href="{{ url_for('pages.news') }}"><span class="tile__icon" aria-hidden="true">📷</span><span>Новости и медиа<span class="tile__hint">лента, фото, трансляции</span></span></a></li>
+    </ul>
+  </div>
+</section>
+{% endblock %}

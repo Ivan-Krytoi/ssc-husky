@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Спорт — {{ config.TITLE_SUFFIX }}{% endblock %}
+
+{% block content %}
+<section class="section reveal" aria-labelledby="sport-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="overline">Раздел · Спорт</p>
+      <h1 id="sport-title">Шесть направлений спорта</h1>
+      <p class="section__lead">Зачёт между группами, сборные вуза, Универсиада и УниверЛига. Внутри каждой дисциплины — расписание и кнопка записи.</p>
+    </div>
+    <div class="cards">
+      {% for d in disciplines %}
+      <div class="card">
+        <span class="card__icon" aria-hidden="true">{{ d.icon }}</span>
+        <h2 class="card__title" style="font-size: var(--fs-h3)">{{ d.name }}</h2>
+        <span class="badge">{{ d.badge }}</span>
+        <p>{{ d.description }}</p>
+        <span class="card__footer"><span>{{ d.schedule_note }}</span></span>
+        <a class="btn btn--secondary" href="{{ url_for('forms.join') }}">Записаться</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

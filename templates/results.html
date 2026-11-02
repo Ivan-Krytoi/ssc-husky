@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Результаты — {{ config.TITLE_SUFFIX }}{% endblock %}
+
+{% block content %}
+<section class="section reveal" aria-labelledby="res-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="overline">Раздел · Результаты</p>
+      <h1 id="res-title">Результаты и медали</h1>
+      <p class="section__lead">Честные цифры из протоколов клуба. Очки внутреннего зачёта — пометка «[уточняется]», пока не свёрены протоколы.</p>
+    </div>
+
+    <span class="badge badge--win" style="font-size: 14px; padding: 8px 14px">🏅 1 место — баскетбол 3×3, областная Универсиада 2026</span>
+
+    <!-- Счётчики клуба -->
+    <ul class="stats" style="margin-top: var(--sp-24)">
+      {% for s in stats %}
+      <li><div class="stat__num"><span data-counter="{{ s.value }}">{{ s.value }}</span>{{ s.suffix }}</div><div class="stat__label">{{ s.label }}</div></li>
+      {% endfor %}
+    </ul>
+
+    {% if medals %}
+    <div class="table-wrap" style="margin-top: var(--sp-32)">
+      <table class="table">
+        <caption>Турнирная таблица внутренней спартакиады · обновлено {{ medals[0].updated_at }}</caption>
+        <thead><tr><th scope="col">Место</th><th scope="col">Группа</th><th scope="col">Очки</th><th scope="col">Этап</th></tr></thead>
+        <tbody>
+          {% for m in medals %}
+          <tr><td class="pos">{{ m.place }}</td><td>{{ m.group_name }}</td><td>{{ m.points }}</td><td>{{ m.note }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="section__lead" style="margin-top: var(--sp-8)">Данные заполняются из протоколов клуба. Следующий этап — <a href="{{ url_for('pages.schedule') }}">в календаре</a>.</p>
+    {% else %}
+    <p class="section__lead">Таблицы ещё наполняются — следи за <a href="{{ url_for('pages.news') }}">новостями</a>.</p>
+    {% endif %}
+
+    <p style="margin-top: var(--sp-24)"><a class="btn btn--primary" href="{{ url_for('forms.join') }}">Хочу так же — записаться</a></p>
+  </div>
+</section>
+{% endblock %}
