@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    /* Тема — ДО первой отрисовки. Иначе при переходах по вкладкам
+       страница мигает тёмной темой: CSS по умолчанию тёмный, а класс
+       ставит app.js уже после пейнта. Синхронный скрипт в <head>
+       исключает вспышку полностью. */
+    try {
+      if (localStorage.getItem('husky-theme') === 'light') {
+        document.documentElement.className += ' theme-light';
+      }
+    } catch (e) { /* приватный режим — тема по умолчанию */ }
+  </script>
   <title>ССК «Хаски» — студенческий спорт Южного Урала</title>
   <meta name="description" content="Студенческий спортивный клуб ЮУТУ «Хаски»: спартакиада вуза, сборные, 6 дисциплин, запись на пробное занятие. Челябинск">
   <link rel="icon" href="/ssc-husky/static/assets/favicon.svg" type="image/svg+xml">
@@ -12,7 +23,7 @@
   <link rel="stylesheet" href="/ssc-husky/static/css/tokens.css?v=2">
   <link rel="stylesheet" href="/ssc-husky/static/css/style.css?v=3">
   <link rel="stylesheet" href="/ssc-husky/static/css/pages.css?v=2">
-  <link rel="stylesheet" href="/ssc-husky/static/css/home-cards.css?v=4">
+  <link rel="stylesheet" href="/ssc-husky/static/css/home-cards.css?v=5">
 </head>
 <body class="js">
   <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -278,6 +289,6 @@
     </div>
   </footer>
 
-  <script src="/ssc-husky/static/js/app.js?v=3"></script>
+  <script src="/ssc-husky/static/js/app.js?v=4"></script>
 </body>
 </html>
