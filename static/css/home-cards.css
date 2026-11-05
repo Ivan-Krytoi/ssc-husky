@@ -40,6 +40,10 @@
   text-align: left;
   overflow: hidden;
   cursor: pointer;
+  /* fallback для старых движков (Yandex/Safari без color-mix): */
+  background: var(--bg-1);
+  border: 1px solid var(--hairline);
+  /* современные браузеры — титульная подложка с брендовым краем: */
   background:
     linear-gradient(160deg, color-mix(in srgb, var(--primary) 7%, transparent), transparent 42%),
     var(--bg-1);
@@ -139,6 +143,7 @@
     --fly-step: 3.2s;  /* перерыв между запусками карточек */
     --fly-dur: 19.2s;  /* полный цикл одной карточки (6 × 3.2 s) */
     --header-h: 72px;  /* высота шапки: дек = вьюпорт минус шапка */
+    height: calc(100vh - var(--header-h)); /* fallback: движки без svh */
     height: calc(100svh - var(--header-h));
     min-height: 540px;
     padding: 0; overflow: hidden;
@@ -157,6 +162,7 @@
   body.js .fcard { position: absolute; inset: 0; padding: clamp(12px, 2.4vh, 28px) var(--gutter) calc(clamp(12px, 2.4vh, 28px) + 116px); }
 
   body.js .fcard__panel {
+    height: min(calc(84vh - 124px), 780px); /* fallback: движки без svh */
     height: min(calc(84svh - 124px), 780px);
     opacity: 0; /* до своего запуска — невидимая, ниже сцены */
     will-change: transform, opacity;
@@ -211,9 +217,11 @@
   display: inline-flex; align-items: center; gap: var(--sp-8);
   padding: var(--sp-8) var(--sp-16);
   border-radius: var(--radius-pill);
+  background: var(--bg-0);
   background: color-mix(in srgb, var(--bg-0) 72%, transparent);
   border: 1px solid var(--hairline);
   color: var(--text-2); font-size: 13px;
+  -webkit-backdrop-filter: blur(8px); /* Safari/старые WebKit-браузеры */
   backdrop-filter: blur(8px);
 }
 .deck__hint b { color: var(--text-1); }
@@ -232,7 +240,9 @@ body.is-overlay-open .site-overlay { visibility: visible; pointer-events: auto; 
 
 .site-overlay__back {
   position: absolute; inset: 0;
+  background: var(--bg-0);
   background: color-mix(in srgb, var(--bg-0) 74%, transparent);
+  -webkit-backdrop-filter: blur(12px); /* Safari/старые WebKit-браузеры */
   backdrop-filter: blur(12px);
   opacity: 0; transition: opacity var(--dur-slow) var(--ease);
   border: 0; padding: 0; cursor: pointer;
@@ -245,10 +255,12 @@ body.is-overlay-open .site-overlay__back { opacity: 1; }
 
 .site-page {
   position: relative;
-  width: min(1180px, 100%); max-height: min(92svh, 980px);
+  width: min(1180px, 100%); max-height: min(92vh, 980px); /* fallback: движки без svh */
+  max-height: min(92svh, 980px);
   display: flex; flex-direction: column;
   border-radius: 22px; overflow: hidden;
   background: var(--bg-0);
+  border: 1px solid var(--hairline); /* fallback: движки без color-mix */
   border: 1px solid color-mix(in srgb, var(--primary) 26%, transparent);
   box-shadow: 0 50px 140px rgba(0, 0, 0, .6), var(--glow-primary);
   opacity: 0; transform: scale(.94) translateY(24px);
@@ -315,6 +327,12 @@ body.is-overlay-open .site-page { opacity: 1; transform: none; }
 /* ------------------------------------------------------------
    6. REDUCED-MOTION и «мини»-страховка
    ------------------------------------------------------------ */
+/* ------------------------------------------------------------ */
+/* Финальная страховка в home-cards.css: без класса .js панели    */
+/* обязаны быть видимыми, даже если анимацию упразднил браузер.  */
+/* ------------------------------------------------------------ */
+body:not(.js) .fcard__panel { opacity: 1; animation: none; will-change: auto; }
+
 @media (prefers-reduced-motion: reduce) {
   .fcard__panel { will-change: auto; }
   .site-page { transition: none; }
