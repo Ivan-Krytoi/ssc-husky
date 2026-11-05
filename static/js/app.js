@@ -96,6 +96,22 @@
   var deck = document.getElementById('deck');
   var stage = document.getElementById('deckStage');
   var pauseBtn = document.getElementById('flightPause');
+  /* Общий полётный контекст: режим ('css' | 'waapi') и список
+     WAAPI-анимаций — того же полёта, но запущенного из скрипта,
+     если движок не хочет стартовать CSS-анимацию (Яндекс и др.). */
+  var flight = { mode: 'css', anims: [] };
+  flight.sync = function () {
+    if (this.mode !== 'waapi') return;
+    var frozen = body.classList.contains('deck--paused') ||
+                 body.classList.contains('deck--idle') ||
+                 body.classList.contains('is-overlay-open');
+    this.anims.forEach(function (a) {
+      try {
+        if (frozen && a.playState === 'running') a.pause();
+        else if (!frozen && a.playState === 'paused') a.play();
+      } catch (err) { /* движок может не дать play/pause — игнорируем */ }
+    });
+  };
   if (deck && stage && pauseBtn && !reduceMotion) {
     var state = { user: false, idle: false, kbd: false, touch: false };
 
@@ -109,6 +125,7 @@
       if (glyph) glyph.textContent = state.user ? '▶' : '⏸';
       if (label) label.textContent = state.user ? 'Продолжить полёт карточек' : 'Остановить полёт карточек';
       pauseBtn.title = state.user ? 'Продолжить полёт' : 'Остановить полёт';
+      if (flight.sync) flight.sync();
     }
 
     // Фокус клавиатурой: замораживаем стаю и ставим карточку в центр
@@ -145,34 +162,90 @@
   }
 
   /* ============================================================
-     БРАУЗЕРНАЯ АДАПТАЦИЯ: страховка полёта карточек.
-     Некоторые браузеры (старые сборки Yandex Browser, «Турбо»-
-     проксирование, отключённые анимации в системе) могут не
-     запустить CSS-анимацию husky-fly. Тогда карточки остались бы
-     невидимыми (opacity: 0 до запуска полёта). Проверяем после
-     загрузки, что анимация реально идёт: если нет — снимаем
-     класс js, и карточки показываются спокойной стопкой.
+     БРАУЗЕРНАЯ АДАПТАЦИЯ: трёхступенчатая страховка полёта.
+     Часть движков не стартует CSS-анимацию husky-fly (старые
+     сборки Яндекс.Браузера, «энергосбережение», кэш). Проверяем
+     после загрузки, что полёт реально идёт:
+       1) идёт CSS-анимация — всё отлично, ничего не меняем;
+       2) не идёт — перезапускаем тем же полётом через Web
+          Animations API (element.animate), продолжают работать
+          кнопка ⏸ и все паузы;
+       3) не завёлся и дублёр — снимаем класс js: карточки
+          остаются видимой спокойной стопкой (без пустоэкрана).
      ============================================================ */
+  var FLY_DURATION = 19200;  /* --fly-dur: полный цикл одной карточки */
+  var FLY_STEP = 3200;       /* --fly-step: перерыв между карточками */
+  var FLY_DELAY0 = 450;      /* стартовый сдвиг первой карточки */
+  var FLY_KEYFRAMES = [
+    { zIndex: 70, opacity: 0, transform: 'translateY(118%) rotateX(16deg) scale(.84)', easing: 'cubic-bezier(.16,.8,.32,1)' },
+    { zIndex: 70, opacity: .92, pointerEvents: 'auto' },
+    { zIndex: 60, opacity: 1, transform: 'translateY(0) rotateX(0deg) scale(1)', easing: 'linear' },
+    { opacity: .9, transform: 'translateY(-5%) scale(.97)' },
+    { opacity: .6, transform: 'translateY(-24%) scale(.93) rotateX(-3deg)' },
+    { zIndex: 40, opacity: .25, transform: 'translateY(-60%) scale(.9) rotateX(-6deg)' },
+    { zIndex: 30, opacity: .05, transform: 'translateY(-100%) rotateX(-10deg) scale(.87)' },
+    { opacity: 0, transform: 'translateY(-140%) rotateX(-14deg) scale(.85) ' },
+    { opacity: 0, transform: 'translateY(-140%) rotateX(-14deg) scale(.85)', pointerEvents: 'none' }
+  ];
+  /* проценты ключевых кадров оригинала — для WAAPI как offsets */
+  var FLY_OFFSETS = [0, .04, .16, .28, .46, .64, .72, .80, 1];
+
   if (deck && stage && !reduceMotion) {
+    var panels = stage.querySelectorAll('.fcard__panel');
     var flightAlive = function () {
       try {
         if (!Element.prototype.getAnimations) return true; /* проверить нечем — не рискуем */
         var probe = stage.querySelector('.fcard__panel');
         if (!probe) return true;
-        var running = 0;
+        var flying = false;
         probe.getAnimations().forEach(function (a) {
-          var name = a.animationName || '';
-          if (name && name !== 'none') running++;
+          var hasName = typeof a.animationName === 'string' && a.animationName !== '' && a.animationName !== 'none';
+          var isWaapi = !!(a.effect && typeof a.effect.getKeyframes === 'function' && a.effect.getKeyframes().length > 1);
+          if (hasName || isWaapi) flying = true;
         });
-        return running > 0;
+        return flying;
       } catch (e) { return true; }
     };
-    var flightGuard = function () {
-      if (body.classList.contains('js') && !flightAlive()) body.classList.remove('js');
+    /* Полёт тем же сценарием, но из скрипта: работает даже там,
+       где CSS-анимация не запускается. */
+    var startWaapiFlight = function () {
+      try {
+        var list = Array.prototype.slice.call(panels);
+        list.forEach(function (panel, i) {
+          var anim = panel.animate(FLY_KEYFRAMES, {
+            duration: FLY_DURATION,
+            delay: FLY_DELAY0 + i * FLY_STEP,
+            iterations: Infinity,
+            fill: 'both'
+          });
+          /* offsets повторяют проценты @keyframes husky-fly */
+          try { anim.effect.setKeyframes(FLY_KEYFRAMES.map(function (k, j) {
+                        var kk = {}; for (var p in k) kk[p] = k[p];
+                        kk.offset = FLY_OFFSETS[j]; return kk;
+                    })); } catch (err) { /* смещения не критичны */ }
+          flight.anims.push(anim);
+        });
+        flight.mode = 'waapi';
+        if (flight.sync) flight.sync();
+        return flight.anims.length > 0;
+      } catch (e) { return false; }
     };
+    var fallBackToStatic = function () { body.classList.remove('js'); };
+
     window.addEventListener('load', function () {
-      setTimeout(flightGuard, 500);  /* до этого карточка №1 ещё не стартовала */
-      setTimeout(flightGuard, 2500); /* повтор для медленных машин */
+      var cssWaited = false;
+      setTimeout(function () { /* 0.6 с: CSS точно применён */
+        cssWaited = !flightAlive();
+      }, 600);
+      setTimeout(function () { /* 2.6 с: CSS не ожил — дублёр WAAPI */
+        if (body.classList.contains('js') && !flightAlive() && cssWaited &&
+            panels.length && typeof panels[0].animate === 'function') {
+          if (!startWaapiFlight()) fallBackToStatic();
+        }
+      }, 2600);
+      setTimeout(function () { /* 4.8 с: и дублёр не пошёл — статика */
+        if (body.classList.contains('js') && !flightAlive()) fallBackToStatic();
+      }, 4800);
     });
   }
 

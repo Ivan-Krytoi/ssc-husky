@@ -268,7 +268,7 @@ tr.medal-3 { box-shadow: inset 3px 0 0 #C08A5B; }
 /* ---------- Демо: skeleton и toast ---------- */
 .skeleton { border-radius: var(--radius-card); background: var(--bg-2); position: relative; overflow: hidden; height: 96px; }
 .skeleton::after {
-  content: ""; position: absolute; inset: 0;
+  content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
   background: linear-gradient(90deg, transparent, rgba(35,194,222,.08), transparent);
   animation: shimmer 1.4s infinite;
 }
