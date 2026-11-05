@@ -6,6 +6,7 @@
    4) чипы-фильтры календаря
    5) главная «Пролёт карточек»: паузы (кнопка ⏸ / фокус с клавиатуры /
       тап по сцене на touch / карточки вне экрана) — hover НЕ ставит паузу.
+   6) браузерная страховка: если движок не запустил полёт — карточки стопкой.
    ============================================================ */
 (function () {
   'use strict';
@@ -141,6 +142,38 @@
     new IntersectionObserver(function (entries) {
       entries.forEach(function (en) { state.idle = !en.isIntersecting; applyFlightPause(); });
     }, { threshold: .05 }).observe(deck);
+  }
+
+  /* ============================================================
+     БРАУЗЕРНАЯ АДАПТАЦИЯ: страховка полёта карточек.
+     Некоторые браузеры (старые сборки Yandex Browser, «Турбо»-
+     проксирование, отключённые анимации в системе) могут не
+     запустить CSS-анимацию husky-fly. Тогда карточки остались бы
+     невидимыми (opacity: 0 до запуска полёта). Проверяем после
+     загрузки, что анимация реально идёт: если нет — снимаем
+     класс js, и карточки показываются спокойной стопкой.
+     ============================================================ */
+  if (deck && stage && !reduceMotion) {
+    var flightAlive = function () {
+      try {
+        if (!Element.prototype.getAnimations) return true; /* проверить нечем — не рискуем */
+        var probe = stage.querySelector('.fcard__panel');
+        if (!probe) return true;
+        var running = 0;
+        probe.getAnimations().forEach(function (a) {
+          var name = a.animationName || '';
+          if (name && name !== 'none') running++;
+        });
+        return running > 0;
+      } catch (e) { return true; }
+    };
+    var flightGuard = function () {
+      if (body.classList.contains('js') && !flightAlive()) body.classList.remove('js');
+    };
+    window.addEventListener('load', function () {
+      setTimeout(flightGuard, 500);  /* до этого карточка №1 ещё не стартовала */
+      setTimeout(flightGuard, 2500); /* повтор для медленных машин */
+    });
   }
 
   /* Мобильное меню-бургер ------------------------------------ */
