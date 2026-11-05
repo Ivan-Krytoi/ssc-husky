@@ -151,15 +151,17 @@
   body.js .deck::after {
     /* дополнительное свечение снизу — «трамплин» вылета */
     content: "";
-    position: absolute; inset: 0; pointer-events: none;
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
+    pointer-events: none;
     background: radial-gradient(ellipse at 50% 112%, rgba(35, 194, 222, .12), transparent 60%),
                 radial-gradient(ellipse at 18% 108%, rgba(123, 97, 255, .10), transparent 55%);
   }
   body.js .deck__stage {
-    position: absolute; inset: 0; display: block; overflow: hidden;
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
+    display: block; overflow: hidden;
     perspective: 1400px; perspective-origin: 50% 45%;
   }
-  body.js .fcard { position: absolute; inset: 0; padding: clamp(12px, 2.4vh, 28px) var(--gutter) calc(clamp(12px, 2.4vh, 28px) + 116px); }
+  body.js .fcard { position: absolute; top: 0; right: 0; bottom: 0; left: 0; padding: clamp(12px, 2.4vh, 28px) var(--gutter) calc(clamp(12px, 2.4vh, 28px) + 116px); }
 
   body.js .fcard__panel {
     height: min(calc(84vh - 124px), 780px); /* fallback: движки без svh */
@@ -230,7 +232,8 @@
    4. ОВЕРЛЕЙ «МИНИ-САЙТ РАЗДЕЛА»
    ------------------------------------------------------------ */
 .site-overlay {
-  position: fixed; inset: 0; z-index: 200;
+  position: fixed; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
+  z-index: 200;
   display: grid; place-items: center;
   padding: clamp(10px, 3vh, 28px) clamp(10px, 2.4vw, 36px);
   visibility: hidden; pointer-events: none;
@@ -239,7 +242,7 @@ body.is-overlay-open { overflow: hidden; } /* скролл страницы за
 body.is-overlay-open .site-overlay { visibility: visible; pointer-events: auto; }
 
 .site-overlay__back {
-  position: absolute; inset: 0;
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
   background: var(--bg-0);
   background: color-mix(in srgb, var(--bg-0) 74%, transparent);
   -webkit-backdrop-filter: blur(12px); /* Safari/старые WebKit-браузеры */
@@ -249,7 +252,7 @@ body.is-overlay-open .site-overlay { visibility: visible; pointer-events: auto; 
 }
 /* кнопка затемнения растягивается на весь оверлей (в теге <button>) */
 .site-overlay__back::before {
-  content: ""; position: absolute; inset: 0;
+  content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
 }
 body.is-overlay-open .site-overlay__back { opacity: 1; }
 
