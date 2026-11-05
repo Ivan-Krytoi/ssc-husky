@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    /* Тема — ДО первой отрисовки. Иначе при переходах по вкладкам
+       страница мигает тёмной темой: CSS по умолчанию тёмный, а класс
+       ставит app.js уже после пейнта. Синхронный скрипт в <head>
+       исключает вспышку полностью. */
+    try {
+      if (localStorage.getItem('husky-theme') === 'light') {
+        document.documentElement.className += ' theme-light';
+      }
+    } catch (e) { /* приватный режим — тема по умолчанию */ }
+  </script>
   <title>{% block title %}ССК «Хаски» — студенческий спорт Южного Урала{% endblock %}</title>
   <meta name="description" content="{% block description %}Студенческий спортивный клуб ЮУТУ «Хаски»: спартакиада вуза, сборные, 6 дисциплин, запись на пробное занятие. Челябинск{% endblock %}">
   <link rel="icon" href="{{ url_for('static', filename='assets/favicon.svg') }}" type="image/svg+xml">
@@ -73,6 +84,6 @@
     </div>
   </footer>
 
-  <script src="{{ url_for('static', filename='js/app.js', v=3) }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js', v=4) }}"></script>
 </body>
 </html>

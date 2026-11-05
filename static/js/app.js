@@ -13,6 +13,13 @@
   var body = document.body, root = document.documentElement;
   var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ?flight=1 — форс полёта для тестов/диагностики (полёт в редакти-
+     руемом окружении, например в браузере с системным reduced-motion).
+     Обычным пользователям параметр ничего не меняет. */
+  var forceFly = false;
+  try { forceFly = new URLSearchParams(location.search).has('flight'); } catch (e) {}
+  var flyOK = !reduceMotion || forceFly;
+
   /* Тема ---------------------------------------------------- */
   var themeBtn = document.getElementById('themeToggle');
   try {
@@ -112,7 +119,13 @@
       } catch (err) { /* движок может не дать play/pause — игнорируем */ }
     });
   };
-  if (deck && stage && pauseBtn && !reduceMotion) {
+  if (deck && stage && pauseBtn && flyOK) {
+    /* Полёт включаем КЛАССОМ на деке: CSS-правила полёта привязаны
+       к .deck--fly, а не к @media. Так сайт ведёт себя ровно
+       одинаково в движках, где media-запрос срабатывает нечестно
+       (старые сборки Яндекса и пр.), и логика управляется из JS. */
+    deck.classList.add('deck--fly');
+
     var state = { user: false, idle: false, kbd: false, touch: false };
 
     function applyFlightPause() {
@@ -128,10 +141,16 @@
       if (flight.sync) flight.sync();
     }
 
-    // Фокус клавиатурой: замораживаем стаю и ставим карточку в центр
+    // Фокус с КЛАВИАТУРЫ: замораживаем стаю, чтобы дать время.
+    // Клик мышью/тап по ссылке тоже дают focusin, но пауза после
+    // него замирала ВСЕ карточки (баг «карточка зависла, не
+    // открывается»), поэтому реагируем только на :focus-visible.
     document.addEventListener('focusin', function (e) {
       var panel = e.target.closest && e.target.closest('.fcard__panel');
       if (!panel || panel.dataset.flyFocus) return;
+      var visible = true;
+      try { visible = e.target.matches(':focus-visible'); } catch (err) { visible = true; }
+      if (!visible) return; /* фокус от мыши/тапа — полёт не трогаем */
       panel.dataset.flyFocus = '1';
       panel.style.animationDelay = '-3.07s'; /* 16 % цикла = карточка по центру */
       state.kbd = true; applyFlightPause();
@@ -159,6 +178,17 @@
     new IntersectionObserver(function (entries) {
       entries.forEach(function (en) { state.idle = !en.isIntersecting; applyFlightPause(); });
     }, { threshold: .05 }).observe(deck);
+
+    /* Живой отклик на смену настройки «уменьшенное движение»:
+       полёт выключаем/включаем без перезагрузки страницы. */
+    var rmQuery = matchMedia('(prefers-reduced-motion: reduce)');
+    var onRmChange = function () {
+      flyOK = !rmQuery.matches || forceFly;
+      if (deck) deck.classList.toggle('deck--fly', flyOK);
+      if (flight.sync) flight.sync();
+    };
+    try { rmQuery.addEventListener('change', onRmChange); }
+    catch (e) { try { rmQuery.addListener(onRmChange); } catch (e2) { /* старые движки */ } }
   }
 
   /* ============================================================
@@ -176,21 +206,23 @@
   var FLY_DURATION = 19200;  /* --fly-dur: полный цикл одной карточки */
   var FLY_STEP = 3200;       /* --fly-step: перерыв между карточками */
   var FLY_DELAY0 = 450;      /* стартовый сдвиг первой карточки */
+  /* Кадры WAAPI-дублёра соответствуют @keyframes husky-fly
+     (pointer-events УБРАН: как и в CSS, он создавал мёртвые зоны). */
   var FLY_KEYFRAMES = [
     { zIndex: 70, opacity: 0, transform: 'translateY(118%) rotateX(16deg) scale(.84)', easing: 'cubic-bezier(.16,.8,.32,1)' },
-    { zIndex: 70, opacity: .92, pointerEvents: 'auto' },
+    { zIndex: 70, opacity: .92 },
     { zIndex: 60, opacity: 1, transform: 'translateY(0) rotateX(0deg) scale(1)', easing: 'linear' },
     { opacity: .9, transform: 'translateY(-5%) scale(.97)' },
     { opacity: .6, transform: 'translateY(-24%) scale(.93) rotateX(-3deg)' },
     { zIndex: 40, opacity: .25, transform: 'translateY(-60%) scale(.9) rotateX(-6deg)' },
     { zIndex: 30, opacity: .05, transform: 'translateY(-100%) rotateX(-10deg) scale(.87)' },
     { opacity: 0, transform: 'translateY(-140%) rotateX(-14deg) scale(.85) ' },
-    { opacity: 0, transform: 'translateY(-140%) rotateX(-14deg) scale(.85)', pointerEvents: 'none' }
+    { opacity: 0, transform: 'translateY(-140%) rotateX(-14deg) scale(.85)' }
   ];
   /* проценты ключевых кадров оригинала — для WAAPI как offsets */
   var FLY_OFFSETS = [0, .04, .16, .28, .46, .64, .72, .80, 1];
 
-  if (deck && stage && !reduceMotion) {
+  if (deck && stage && flyOK) {
     var panels = stage.querySelectorAll('.fcard__panel');
     var flightAlive = function () {
       try {

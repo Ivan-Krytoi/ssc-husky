@@ -50,9 +50,14 @@
   border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
   box-shadow: var(--shadow-1), 0 40px 90px rgba(11, 15, 23, .5);
 }
+/* Ховер БЕЗ filter и БЕЗ пересборки blur-тени: карточки постоянно
+   движутся под курсором — jQuery-подобный enter/leave случается
+   непрерывно, и любая дорогая отрисовка (filter, blur-тень) на
+   каждой смене ховера даёт фризы. Дешёвые border-color + outline. */
 .fcard__panel:hover {
-  filter: brightness(1.05);
-  box-shadow: var(--shadow-1), var(--glow-primary), 0 40px 90px rgba(11, 15, 23, .55);
+  border-color: var(--primary-hover);
+  outline: 2px solid color-mix(in srgb, var(--primary-hover) 55%, transparent);
+  outline-offset: -2px;
 }
 /* фокус на самой карточке-кнопке */
 .fcard__panel:focus-visible {
@@ -136,61 +141,73 @@
 .fcard__panel--accent .fcard__open:hover { box-shadow: 0 0 24px rgba(11, 15, 23, .4); }
 
 /* ------------------------------------------------------------
-   3. ПОЛЁТ (только при JS и отсутствии reduced-motion)
+   3. ПОЛЁТ (только при JS И классе .deck--fly, который ставит
+   app.js). Ключевой сдвиг: пишем не внутри @media, а на классе —
+   движки, игнорирующие media-запрос (старые сборки Яндекса),
+   получают одинаковое поведение; prefers-reduced-motion в JS.
    ------------------------------------------------------------ */
-@media (prefers-reduced-motion: no-preference) {
-  body.js .deck {
-    --fly-step: 3.2s;  /* перерыв между запусками карточек */
-    --fly-dur: 19.2s;  /* полный цикл одной карточки (6 × 3.2 s) */
-    --header-h: 72px;  /* высота шапки: дек = вьюпорт минус шапка */
-    height: calc(100vh - var(--header-h)); /* fallback: движки без svh */
-    height: calc(100svh - var(--header-h));
-    min-height: 540px;
-    padding: 0; overflow: hidden;
-  }
-  body.js .deck::after {
-    /* дополнительное свечение снизу — «трамплин» вылета */
-    content: "";
-    position: absolute; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
-    pointer-events: none;
-    background: radial-gradient(ellipse at 50% 112%, rgba(35, 194, 222, .12), transparent 60%),
-                radial-gradient(ellipse at 18% 108%, rgba(123, 97, 255, .10), transparent 55%);
-  }
-  body.js .deck__stage {
-    position: absolute; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
-    display: block; overflow: hidden;
-    perspective: 1400px; perspective-origin: 50% 45%;
-  }
-  body.js .fcard { position: absolute; top: 0; right: 0; bottom: 0; left: 0; padding: clamp(12px, 2.4vh, 28px) var(--gutter) calc(clamp(12px, 2.4vh, 28px) + 116px); }
+body.js .deck--fly {
+  --fly-step: 3.2s;  /* перерыв между запусками карточек */
+  --fly-dur: 19.2s;  /* полный цикл одной карточки (6 × 3.2 s) */
+  --header-h: 72px;  /* высота шапки: дек = вьюпорт минус шапка */
+  height: calc(100vh - var(--header-h)); /* fallback: движки без svh */
+  height: calc(100svh - var(--header-h));
+  min-height: 540px;
+  padding: 0; overflow: hidden;
+}
+body.js .deck--fly::after {
+  /* дополнительное свечение снизу — «трамплин» вылета */
+  content: "";
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 112%, rgba(35, 194, 222, .12), transparent 60%),
+              radial-gradient(ellipse at 18% 108%, rgba(123, 97, 255, .10), transparent 55%);
+}
+body.js .deck--fly .deck__stage {
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; /* fallback: движки без inset */
+  display: block; overflow: hidden;
+  perspective: 1400px; perspective-origin: 50% 45%;
+}
+body.js .deck--fly .fcard { position: absolute; top: 0; right: 0; bottom: 0; left: 0; padding: clamp(12px, 2.4vh, 28px) var(--gutter) calc(clamp(12px, 2.4vh, 28px) + 116px); }
 
-  body.js .fcard__panel {
-    height: min(calc(84vh - 124px), 780px); /* fallback: движки без svh */
-    height: min(calc(84svh - 124px), 780px);
-    opacity: 0; /* до своего запуска — невидимая, ниже сцены */
-    will-change: transform, opacity;
-    animation: husky-fly var(--fly-dur) linear infinite;
-    animation-delay: calc(var(--i) * var(--fly-step) + .45s);
-    animation-fill-mode: both;
-  }
-  /* пауза полёта: наведение, кнопка, оверлей, вне экрана */
-  body.js.deck--paused .fcard__panel,
-  body.js.is-overlay-open .fcard__panel,
-  body.js.deck--idle .fcard__panel { animation-play-state: paused; }
+body.js .deck--fly .fcard__panel {
+  height: min(calc(84vh - 124px), 780px); /* fallback: движки без svh */
+  height: min(calc(84svh - 124px), 780px);
+  opacity: 0; /* до своего запуска — невидимая, ниже сцены */
+  animation: husky-fly var(--fly-dur) linear infinite;
+  animation-delay: calc(var(--i) * var(--fly-step) + .45s);
+  animation-fill-mode: both;
+  /* will-change БЫЛО — убрано: 6 вечных GPU-слоёв = memory-дренаж;
+     анимация сама поднимает карточку в композитный слой */
+}
+/* пауза полёта: кнопка, фокус с клавиатуры, тап по сцене, вне экрана */
+body.js.deck--paused .fcard__panel,
+body.js.is-overlay-open .fcard__panel,
+body.js.deck--idle .fcard__panel { animation-play-state: paused; }
+body.js.deck--paused .fcard__panel,
+body.js.is-overlay-open .fcard__panel,
+body.js.deck--idle .fcard__panel { pointer-events: auto; }
+/* дек уехал за экран (скроллим «Все разделы») — карточки полностью
+   уходят из композитинга: пауза + visibility, слои отпускаются */
+body.js.deck--idle .fcard__panel { visibility: hidden; }
 
-  /* список в навигационной полоске */
-  body.js .deck__ui {
-    position: absolute; left: 0; right: 0; bottom: clamp(10px, 3vh, 26px);
-    margin: 0; z-index: 6;
-  }
+/* список в навигационной полоске */
+body.js .deck--fly .deck__ui {
+  position: absolute; left: 0; right: 0; bottom: clamp(10px, 3vh, 26px);
+  margin: 0; z-index: 6;
 }
 
 @keyframes husky-fly {
+  /* БЕЗ pointer-events в кадрах: анимация pointer-events —
+     источник «мёртвых» зон (карточка видна, но тыкать нельзя).
+     Кликабельность обеспечивает сам <a>; лишние кадры клипуются
+     overflow:hidden сцены, невидимую карточку не задеть. */
   0%   {
-    z-index: 70; opacity: 0; pointer-events: none;
+    z-index: 70; opacity: 0;
     transform: translateY(118%) rotateX(16deg) scale(.84);
     animation-timing-function: cubic-bezier(.16, .8, .32, 1);
   }
-  4%   { z-index: 70; opacity: .92; pointer-events: auto; }
+  4%   { z-index: 70; opacity: .92; }
   16%  {
     z-index: 60;
     transform: translateY(0) rotateX(0deg) scale(1); opacity: 1;
@@ -199,9 +216,9 @@
   28%  { transform: translateY(-5%) scale(.97); opacity: .9; }
   46%  { transform: translateY(-24%) scale(.93) rotateX(-3deg); opacity: .6; }
   64%  { z-index: 40; transform: translateY(-60%) scale(.9) rotateX(-6deg); opacity: .25; }
-  72%  { z-index: 30; transform: translateY(-100%) rotateX(-10deg) scale(.87); opacity: .05; pointer-events: none; }
+  72%  { z-index: 30; transform: translateY(-100%) rotateX(-10deg) scale(.87); opacity: .05; }
   80%  { transform: translateY(-140%) rotateX(-14deg) scale(.85); opacity: 0; }
-  100% { transform: translateY(-140%) rotateX(-14deg) scale(.85); opacity: 0; pointer-events: none; }
+  100% { transform: translateY(-140%) rotateX(-14deg) scale(.85); opacity: 0; }
 }
 
 /* шапку держим в одну строку на средних экранах (CTA дублирует меню) */
