@@ -22,7 +22,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css', v=2) }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=3) }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css', v=2) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css', v=3) }}">
   {% block css %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -42,6 +42,7 @@
         <a href="{{ url_for('pages.sport') }}">Спорт</a>
         <a href="{{ url_for('pages.schedule') }}">Календарь</a>
         <a href="{{ url_for('pages.results') }}">Результаты</a>
+        <a href="{{ url_for('pages.album') }}">Альбом</a>
         <a href="{{ url_for('pages.about') }}">О клубе</a>
         <a href="{{ url_for('pages.news') }}">Новости</a>
       </nav>
@@ -69,6 +70,7 @@
         <a href="{{ url_for('pages.sport') }}">Спорт</a><br>
         <a href="{{ url_for('pages.schedule') }}">Календарь</a><br>
         <a href="{{ url_for('pages.results') }}">Результаты</a><br>
+        <a href="{{ url_for('pages.album') }}">Альбом</a><br>
         <a href="{{ url_for('forms.join') }}">Как записаться</a>
       </div>
       <div>

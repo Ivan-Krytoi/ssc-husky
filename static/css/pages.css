@@ -85,3 +85,133 @@
   color: transparent;
   margin-bottom: var(--sp-16);
 }
+
+/* ============================================================
+   АЛЬБОМ (/album/): кадр месяца, masonry-сетка, лайтбокс
+   ============================================================ */
+
+/* ---------- Кадр месяца ---------- */
+.album-hero {
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-1);
+}
+.album-hero img { width: 100%; height: auto; display: block; }
+.album-hero figcaption {
+  position: absolute; inset: auto 0 0 0;
+  padding: var(--sp-48) var(--sp-24) var(--sp-24);
+  background: linear-gradient(0deg, rgba(7,10,16,.86) 0%, rgba(7,10,16,.45) 55%, transparent 100%);
+  display: grid; gap: var(--sp-8); justify-items: start;
+}
+.album-hero .badge { background: rgba(35,194,222,.22); color: var(--primary-hover); }
+.theme-light .album-hero .badge { background: rgba(15,122,153,.14); color: var(--primary-deep); }
+.album-hero__title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(18px, 2.4vw, 26px); color: #F2F5F9;
+}
+.theme-light .album-hero__title { color: #12181F; }
+.album-quote { color: rgba(242,245,249,.78); font-size: var(--fs-small); }
+.theme-light .album-quote { color: rgba(18,24,31,.66); }
+
+/* ---------- Сетка фото ---------- */
+.album-grid {
+  columns: 3 240px;          /* masonry без JS: колонки с автоперегруппировкой */
+  column-gap: var(--sp-16);
+}
+.photo-card {
+  break-inside: avoid;
+  margin: 0 0 var(--sp-16);
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  background: var(--bg-2);
+}
+.photo-card__zoom {
+  display: block; width: 100%; padding: 0; border: 0; background: none;
+  cursor: zoom-in; position: relative;
+}
+.photo-card__zoom img {
+  display: block; width: 100%; height: auto;
+  transition: transform var(--dur-slow) var(--ease), opacity var(--dur) var(--ease);
+}
+.photo-card__zoom:hover img,
+.photo-card__zoom:focus-visible img { transform: scale(1.04); }
+.photo-card__zoom:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+.photo-card__plus {
+  position: absolute; top: var(--sp-12); right: var(--sp-12);
+  width: 34px; height: 34px; border-radius: var(--radius-pill);
+  display: grid; place-items: center;
+  background: rgba(11,15,23,.55); color: #F2F5F9;
+  font-size: 20px; line-height: 1; opacity: 0;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  transform: scale(.7);
+}
+.photo-card__zoom:hover .photo-card__plus,
+.photo-card__zoom:focus-visible .photo-card__plus { opacity: 1; transform: scale(1); }
+.photo-card__cap {
+  position: absolute; inset: auto 0 0 0;
+  padding: var(--sp-32) var(--sp-12) var(--sp-12);
+  background: linear-gradient(0deg, rgba(7,10,16,.82) 0%, rgba(7,10,16,.35) 60%, transparent 100%);
+  display: grid; gap: var(--sp-4); justify-items: start;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.photo-card__cap .badge { background: rgba(35,194,222,.22); color: #9EDAED; }
+.photo-card__cap b { color: #F2F5F9; font-size: var(--fs-small); line-height: 1.35; }
+.photo-card:hover .photo-card__cap,
+.photo-card:focus-within .photo-card__cap { opacity: 1; transform: translateY(0); }
+
+/* ---------- Лайтбокс ---------- */
+.lightbox { position: fixed; inset: 0; z-index: 90; }
+.lightbox__backdrop {
+  position: absolute; inset: 0;
+  background: rgba(7,10,16,.92);
+  backdrop-filter: blur(6px);
+}
+.lightbox__body {
+  position: absolute; inset: var(--sp-24);
+  margin: 0; display: grid; place-items: center; pointer-events: none;
+}
+.lightbox__img {
+  max-width: 100%; max-height: calc(100% - var(--sp-64));
+  border-radius: var(--radius-card);
+  box-shadow: var(--glow-primary), var(--shadow-1);
+  pointer-events: auto;
+  animation: lb-in var(--dur-slow) var(--ease);
+}
+@keyframes lb-in { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+.lightbox__cap {
+  position: absolute; inset: auto 0 0 0; text-align: center;
+  display: grid; gap: var(--sp-4); justify-items: center;
+  color: #F2F5F9; padding: var(--sp-16);
+}
+.lightbox__cap .badge { background: rgba(35,194,222,.22); color: #9EDAED; }
+.lightbox__cap b { font-size: var(--fs-body); }
+.lightbox__num { color: var(--text-2); font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
+.lightbox__btn {
+  position: absolute; z-index: 1;
+  width: 48px; height: 48px; border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline);
+  background: rgba(16,22,31,.8); color: #F2F5F9;
+  font-size: 24px; line-height: 1;
+  display: grid; place-items: center; cursor: pointer;
+  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.lightbox__btn:hover { background: var(--primary); color: #0B0F17; transform: scale(1.06); }
+.lightbox__btn--close { top: var(--sp-16); right: var(--sp-16); }
+.lightbox__btn--prev { left: var(--sp-16); top: 50%; translate: 0 -50%; }
+.lightbox__btn--next { right: var(--sp-16); top: 50%; translate: 0 -50%; }
+body.lb-open { overflow: hidden; }
+
+@media (max-width: 767px) {
+  .lightbox__body { inset: var(--sp-64) var(--sp-8) var(--sp-96); }
+  .lightbox__btn--prev, .lightbox__btn--next { top: auto; bottom: var(--sp-16); translate: 0 0; }
+  .lightbox__btn--prev { left: calc(50% - 56px); }
+  .lightbox__btn--next { right: calc(50% - 56px); }
+}
+
+/* Счётчики чипов: аккуратная цифра справа (контраст ≥4.5 на активной плашке) */
+.chip__count { opacity: .8; margin-left: 6px; font-size: var(--fs-small); }

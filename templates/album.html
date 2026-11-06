@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Альбом — {{ config.TITLE_SUFFIX }}{% endblock %}
+{% block description %}Лучшие фотографии ССК «Хаски»: имиджевая фотосессия, спартакиада, волейбол, мини-футбол, настольный теннис, фиджитал-турнир, дартс и кросс. Полный архив (435+) — во ВКонтакте{% endblock %}
+
+{% block content %}
+<!-- ============ Кадр месяца ============ -->
+<section class="section reveal" aria-labelledby="album-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="overline">Раздел · Альбом</p>
+      <h1 id="album-title">{{ total }} лучших кадров клуба</h1>
+      <p class="section__lead">Витрина фотоархива ССК «Хаски»: студийная сессия, спартакиада вуза, Универсиада и турниры клуба. Полный архив — <b>435+ фото</b> в сообществе ВК.</p>
+    </div>
+
+    {% if featured %}
+    <figure class="album-hero">
+      <img src="{{ url_for('static', filename='assets/album/' + featured.file) }}"
+           width="1200" height="800" alt="{{ featured.alt }}" loading="eager">
+      <figcaption>
+        <span class="badge">{{ featured.cat_name }}</span>
+        <p class="album-hero__title">{{ featured.title }}</p>
+        <p class="album-quote">«Хаски — это не просто команда, а настоящая семья!»</p>
+      </figcaption>
+    </figure>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ============ Сетка + фильтры ============ -->
+<section class="section reveal" aria-labelledby="album-grid-title">
+  <div class="container">
+    <h2 id="album-grid-title" class="visually-hidden">Галерея фотографий клуба</h2>
+
+    <!-- Фильтры по категориям — логика чипов из app.js (data-filter-group) -->
+    <div class="chips" data-filter-group role="group" aria-label="Фильтр фотографий по направлению" style="margin-bottom: var(--sp-24)">
+      <button class="chip chip--active" type="button" data-filter="all">Все кадры <span class="chip__count">{{ total }}</span></button>
+      {% for cat_id, cat_name in cats %}
+      <button class="chip" type="button" data-filter="{{ cat_id }}">{{ cat_name }}</button>
+      {% endfor %}
+    </div>
+
+    <div class="album-grid" data-lightbox>
+      {% for p in photos %}
+      <figure class="photo-card" data-status="{{ p.cat }}" data-title="{{ p.title }}" data-cat="{{ p.cat_name }}">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: {{ p.title }}">
+          <img src="{{ url_for('static', filename='assets/album/' + p.file) }}" loading="lazy"
+               alt="{{ p.alt }}" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">{{ p.cat_name }}</span>
+          <b>{{ p.title }}</b>
+        </figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+
+    <p class="section__lead" style="margin-top: var(--sp-24)">
+      Снимки кураторской коллекции взяты из открытых альбомов сообщества — полный архив и новые кадры появляются сразу во ВКонтакте, а лучшие попадают на эту страницу.
+    </p>
+
+    <p style="margin-top: var(--sp-16)">
+      <a class="btn btn--primary" href="https://vk.ru/albums-227779289" rel="noopener">Полный архив во ВКонтакте <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="btn btn--ghost" href="https://vk.ru/ssc_husky_official" rel="noopener">Новости о новых альбомах <span class="arrow" aria-hidden="true">→</span></a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ Лайтбокс ============ -->
+<div class="lightbox" id="lightbox" hidden aria-hidden="true">
+  <div class="lightbox__backdrop" data-lb-close></div>
+  <figure class="lightbox__body" role="dialog" aria-modal="true" aria-label="Просмотр фотографии">
+    <img class="lightbox__img" id="lbImg" src="" alt="">
+    <figcaption class="lightbox__cap">
+      <span class="badge" id="lbCat"></span>
+      <b id="lbTitle"></b>
+      <span class="lightbox__num" id="lbNum"></span>
+    </figcaption>
+  </figure>
+  <button class="lightbox__btn lightbox__btn--close" type="button" id="lbClose" aria-label="Закрыть просмотр (Esc)">✕</button>
+  <button class="lightbox__btn lightbox__btn--prev" type="button" id="lbPrev" aria-label="Предыдущее фото (←)">‹</button>
+  <button class="lightbox__btn lightbox__btn--next" type="button" id="lbNext" aria-label="Следующее фото (→)">›</button>
+</div>
+
+<script src="{{ url_for('static', filename='js/album.js', v=1) }}"></script>
+{% endblock %}
