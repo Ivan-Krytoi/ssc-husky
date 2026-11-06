@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    /* Тема — ДО первой отрисовки. Иначе при переходах по вкладкам
+       страница мигает тёмной темой: CSS по умолчанию тёмный, а класс
+       ставит app.js уже после пейнта. Синхронный скрипт в <head>
+       исключает вспышку полностью. */
+    try {
+      if (localStorage.getItem('husky-theme') === 'light') {
+        document.documentElement.className += ' theme-light';
+      }
+    } catch (e) { /* приватный режим — тема по умолчанию */ }
+  </script>
+  <title>Альбом — ССК «Хаски»</title>
+  <meta name="description" content="Лучшие фотографии ССК «Хаски»: имиджевая фотосессия, спартакиада, волейбол, мини-футбол, настольный теннис, фиджитал-турнир, дартс и кросс. Полный архив (435+) — во ВКонтакте">
+  <link rel="icon" href="/ssc-husky/static/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ssc-husky/static/css/tokens.css?v=2">
+  <link rel="stylesheet" href="/ssc-husky/static/css/style.css?v=3">
+  <link rel="stylesheet" href="/ssc-husky/static/css/pages.css?v=3">
+  
+</head>
+<body class="">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
+
+  <!-- ============ ШАПКА ============ -->
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="/ssc-husky/" aria-current="page">
+        <img class="logo__badge" src="/ssc-husky/static/assets/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_%D0%A5%D0%B0%D1%81%D0%BA%D0%B8_%D0%92%D0%9A.jpg" alt="" width="48" height="48">
+        <span>
+          <span class="logo__name">ССК «ХАСКИ»</span>
+          <span class="logo__sub">студенческий спорт ЮУТУ</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="/ssc-husky/sport/">Спорт</a>
+        <a href="/ssc-husky/schedule/">Календарь</a>
+        <a href="/ssc-husky/results/">Результаты</a>
+        <a href="/ssc-husky/album/">Альбом</a>
+        <a href="/ssc-husky/about/">О клубе</a>
+        <a href="/ssc-husky/news/">Новости</a>
+      </nav>
+      <button id="themeToggle" class="icon-btn" type="button" aria-pressed="false" title="Светлая/тёмная тема">🌓<span class="visually-hidden">Переключить тему</span></button>
+      <a class="btn btn--primary" href="/ssc-husky/join/">Записаться</a>
+      <button class="icon-btn burger" type="button" aria-expanded="false">☰<span class="visually-hidden">Меню</span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    
+<!-- ============ Кадр месяца ============ -->
+<section class="section reveal" aria-labelledby="album-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="overline">Раздел · Альбом</p>
+      <h1 id="album-title">26 лучших кадров клуба</h1>
+      <p class="section__lead">Витрина фотоархива ССК «Хаски»: студийная сессия, спартакиада вуза, Универсиада и турниры клуба. Полный архив — <b>435+ фото</b> в сообществе ВК.</p>
+    </div>
+
+    
+    <figure class="album-hero">
+      <img src="/ssc-husky/static/assets/album/imidj_457239054.jpg"
+           width="1200" height="800" alt="Групповой портрет команды ССК «Хаски» в клубной форме на белом студийном фоне" loading="eager">
+      <figcaption>
+        <span class="badge">Команда и имидж</span>
+        <p class="album-hero__title">Сборная клуба в клубной форме</p>
+        <p class="album-quote">«Хаски — это не просто команда, а настоящая семья!»</p>
+      </figcaption>
+    </figure>
+    
+  </div>
+</section>
+
+<!-- ============ Сетка + фильтры ============ -->
+<section class="section reveal" aria-labelledby="album-grid-title">
+  <div class="container">
+    <h2 id="album-grid-title" class="visually-hidden">Галерея фотографий клуба</h2>
+
+    <!-- Фильтры по категориям — логика чипов из app.js (data-filter-group) -->
+    <div class="chips" data-filter-group role="group" aria-label="Фильтр фотографий по направлению" style="margin-bottom: var(--sp-24)">
+      <button class="chip chip--active" type="button" data-filter="all">Все кадры <span class="chip__count">26</span></button>
+      
+      <button class="chip" type="button" data-filter="team">Команда и имидж</button>
+      
+      <button class="chip" type="button" data-filter="volleyball">Волейбол</button>
+      
+      <button class="chip" type="button" data-filter="football">Мини-футбол</button>
+      
+      <button class="chip" type="button" data-filter="tennis">Настольный теннис</button>
+      
+      <button class="chip" type="button" data-filter="fidgetal">Фиджитал</button>
+      
+      <button class="chip" type="button" data-filter="darts">Дартс</button>
+      
+      <button class="chip" type="button" data-filter="cross">Кросс</button>
+      
+    </div>
+
+    <div class="album-grid" data-lightbox>
+      
+      <figure class="photo-card" data-status="team" data-title="Настроение клуба" data-cat="Команда и имидж">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Настроение клуба">
+          <img src="/ssc-husky/static/assets/album/imidj_457239021.jpg" loading="lazy"
+               alt="Студия: четыре студента смеются в обнимку на фоне зелёного мха" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Команда и имидж</span>
+          <b>Настроение клуба</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="team" data-title="Спорт — часть жизни" data-cat="Команда и имидж">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Спорт — часть жизни">
+          <img src="/ssc-husky/static/assets/album/imidj_457239024.jpg" loading="lazy"
+               alt="Портрет студента с футбольным мячом на ладони в студии" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Команда и имидж</span>
+          <b>Спорт — часть жизни</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="team" data-title="Куча-мала в студии" data-cat="Команда и имидж">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Куча-мала в студии">
+          <img src="/ssc-husky/static/assets/album/imidj_457239034.jpg" loading="lazy"
+               alt="Весёлая группа студентов обнимается, один показывает жест «ок»" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Команда и имидж</span>
+          <b>Куча-мала в студии</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="football" data-title="Спартакиада вуза: общий кадр" data-cat="Мини-футбол">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Спартакиада вуза: общий кадр">
+          <img src="/ssc-husky/static/assets/album/foot_457239646.jpg" loading="lazy"
+               alt="Сводные команды спартакиады ЮУТУ на футбольном поле с мячом" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Мини-футбол</span>
+          <b>Спартакиада вуза: общий кадр</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="football" data-title="Судья в фирменной форме" data-cat="Мини-футбол">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Судья в фирменной форме">
+          <img src="/ssc-husky/static/assets/album/foot_457239675.jpg" loading="lazy"
+               alt="Арбитр в голубой накидке «Хаски» на фоне играющих команд" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Мини-футбол</span>
+          <b>Судья в фирменной форме</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="football" data-title="Инструктаж перед туром" data-cat="Мини-футбол">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Инструктаж перед туром">
+          <img src="/ssc-husky/static/assets/album/foot_457239639.jpg" loading="lazy"
+               alt="Тренер объясняет план игры команде в жёлтых манишках" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Мини-футбол</span>
+          <b>Инструктаж перед туром</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="football" data-title="Вратарь вводит мяч в игру" data-cat="Мини-футбол">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Вратарь вводит мяч в игру">
+          <img src="/ssc-husky/static/assets/album/foot_457239684.jpg" loading="lazy"
+               alt="Вратарь в розовой форме готовится передать мяч на поле" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Мини-футбол</span>
+          <b>Вратарь вводит мяч в игру</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="volleyball" data-title="Награждение финалистов" data-cat="Волейбол">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Награждение финалистов">
+          <img src="/ssc-husky/static/assets/album/vol_457239402.jpg" loading="lazy"
+               alt="Вручение диплома и сувенира волейболистам на краю площадки" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Волейбол</span>
+          <b>Награждение финалистов</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="volleyball" data-title="Медалисты с тренером" data-cat="Волейбол">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Медалисты с тренером">
+          <img src="/ssc-husky/static/assets/album/vol_457239441.jpg" loading="lazy"
+               alt="Медалисты волейбольного финала стоят рядом с наставником" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Волейбол</span>
+          <b>Медалисты с тренером</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="volleyball" data-title="Команда-финалист у сетки" data-cat="Волейбол">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Команда-финалист у сетки">
+          <img src="/ssc-husky/static/assets/album/vol_457239442.jpg" loading="lazy"
+               alt="Девушки в чёрной форме с медалями обнимаются у волейбольной сетки" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Волейбол</span>
+          <b>Команда-финалист у сетки</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="volleyball" data-title="Тренировочный тур в зале" data-cat="Волейбол">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Тренировочный тур в зале">
+          <img src="/ssc-husky/static/assets/album/vol_457239404.jpg" loading="lazy"
+               alt="Игроки в зелёных манишках разминаются на тренировке волейболом в зале" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Волейбол</span>
+          <b>Тренировочный тур в зале</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="tennis" data-title="Чемпионат клуба по настольному теннису" data-cat="Настольный теннис">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Чемпионат клуба по настольному теннису">
+          <img src="/ssc-husky/static/assets/album/tennis_457239141.jpg" loading="lazy"
+               alt="Игрок у теннисного стола, за партой наблюдающие зрители" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Настольный теннис</span>
+          <b>Чемпионат клуба по настольному теннису</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="tennis" data-title="Удар форхендом" data-cat="Настольный теннис">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Удар форхендом">
+          <img src="/ssc-husky/static/assets/album/tennis_457239151.jpg" loading="lazy"
+               alt="Игрок исполняет удар форхендом красной ракеткой над столом" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Настольный теннис</span>
+          <b>Удар форхендом</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="tennis" data-title="Эмоции победы" data-cat="Настольный теннис">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Эмоции победы">
+          <img src="/ssc-husky/static/assets/album/tennis_457239162.jpg" loading="lazy"
+               alt="Игрок в красной футболке обнимает товарища после выигрыша партии" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Настольный теннис</span>
+          <b>Эмоции победы</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="tennis" data-title="Трибуны фанатеют" data-cat="Настольный теннис">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Трибуны фанатеют">
+          <img src="/ssc-husky/static/assets/album/tennis_457239176.jpg" loading="lazy"
+               alt="Болельщик аплодирует после яркого розыгрыша" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Настольный теннис</span>
+          <b>Трибуны фанатеют</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="fidgetal" data-title="Поддержка на турнире" data-cat="Фиджитал">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Поддержка на турнире">
+          <img src="/ssc-husky/static/assets/album/fidget_457239196.jpg" loading="lazy"
+               alt="Студенческая группа поддержки с синими помпонами у трибун зала" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Фиджитал</span>
+          <b>Поддержка на турнире</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="fidgetal" data-title="Награды турнира «Баскетбол»" data-cat="Фиджитал">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Награды турнира «Баскетбол»">
+          <img src="/ssc-husky/static/assets/album/fidget_457239229.jpg" loading="lazy"
+               alt="Кубки и баскетбольный мяч на полу игрового зала" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Фиджитал</span>
+          <b>Награды турнира «Баскетбол»</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="fidgetal" data-title="Данк в игровой зал" data-cat="Фиджитал">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Данк в игровой зал">
+          <img src="/ssc-husky/static/assets/album/fidget_457239231.jpg" loading="lazy"
+               alt="Игрок в чёрной форме выполняет данк в прыжке к кольцу" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Фиджитал</span>
+          <b>Данк в игровой зал</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="fidgetal" data-title="Победители фиджитал-турнира" data-cat="Фиджитал">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Победители фиджитал-турнира">
+          <img src="/ssc-husky/static/assets/album/fidget_457239233.jpg" loading="lazy"
+               alt="Два игрока с медалями и грамотой фиджитал-турнира" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Фиджитал</span>
+          <b>Победители фиджитал-турнира</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="darts" data-title="Момент броска" data-cat="Дартс">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Момент броска">
+          <img src="/ssc-husky/static/assets/album/darts_457239101.jpg" loading="lazy"
+               alt="Девушка выпускает дротик по мишени в спортзале" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Дартс</span>
+          <b>Момент броска</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="darts" data-title="Командный зачёт дартс" data-cat="Дартс">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Командный зачёт дартс">
+          <img src="/ssc-husky/static/assets/album/darts_457239115.jpg" loading="lazy"
+               alt="Команда дартсменов с дипломами на фоне мишени" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Дартс</span>
+          <b>Командный зачёт дартс</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="darts" data-title="Призёры чемпионата по дартс" data-cat="Дартс">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Призёры чемпионата по дартс">
+          <img src="/ssc-husky/static/assets/album/darts_457239122.jpg" loading="lazy"
+               alt="Группа победителей чемпионата по дартс с дипломами" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Дартс</span>
+          <b>Призёры чемпионата по дартс</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="cross" data-title="Кросс Универсиады: темп" data-cat="Кросс">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Кросс Универсиады: темп">
+          <img src="/ssc-husky/static/assets/album/cross_457239792.jpg" loading="lazy"
+               alt="Бегун с номером 178 бежит по лесной дистанции" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Кросс</span>
+          <b>Кросс Универсиады: темп</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="cross" data-title="Сборная клуба на кроссе" data-cat="Кросс">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Сборная клуба на кроссе">
+          <img src="/ssc-husky/static/assets/album/cross_457239795.jpg" loading="lazy"
+               alt="Команда «Хаски» с флагами Универсиады и баннером клуба" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Кросс</span>
+          <b>Сборная клуба на кроссе</b>
+        </figcaption>
+      </figure>
+      
+      <figure class="photo-card" data-status="cross" data-title="Перед стартом" data-cat="Кросс">
+        <button class="photo-card__zoom" type="button" aria-label="Открыть фото: Перед стартом">
+          <img src="/ssc-husky/static/assets/album/cross_457239800.jpg" loading="lazy"
+               alt="Шеренга бегунов в номерах ждёт стартовый выстрел" width="1200" height="813">
+          <span class="photo-card__plus" aria-hidden="true">+</span>
+        </button>
+        <figcaption class="photo-card__cap">
+          <span class="badge badge--live">Кросс</span>
+          <b>Перед стартом</b>
+        </figcaption>
+      </figure>
+      
+    </div>
+
+    <p class="section__lead" style="margin-top: var(--sp-24)">
+      Снимки кураторской коллекции взяты из открытых альбомов сообщества — полный архив и новые кадры появляются сразу во ВКонтакте, а лучшие попадают на эту страницу.
+    </p>
+
+    <p style="margin-top: var(--sp-16)">
+      <a class="btn btn--primary" href="https://vk.ru/albums-227779289" rel="noopener">Полный архив во ВКонтакте <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="btn btn--ghost" href="https://vk.ru/ssc_husky_official" rel="noopener">Новости о новых альбомах <span class="arrow" aria-hidden="true">→</span></a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ Лайтбокс ============ -->
+<div class="lightbox" id="lightbox" hidden aria-hidden="true">
+  <div class="lightbox__backdrop" data-lb-close></div>
+  <figure class="lightbox__body" role="dialog" aria-modal="true" aria-label="Просмотр фотографии">
+    <img class="lightbox__img" id="lbImg" src="" alt="">
+    <figcaption class="lightbox__cap">
+      <span class="badge" id="lbCat"></span>
+      <b id="lbTitle"></b>
+      <span class="lightbox__num" id="lbNum"></span>
+    </figcaption>
+  </figure>
+  <button class="lightbox__btn lightbox__btn--close" type="button" id="lbClose" aria-label="Закрыть просмотр (Esc)">✕</button>
+  <button class="lightbox__btn lightbox__btn--prev" type="button" id="lbPrev" aria-label="Предыдущее фото (←)">‹</button>
+  <button class="lightbox__btn lightbox__btn--next" type="button" id="lbNext" aria-label="Следующее фото (→)">›</button>
+</div>
+
+<script src="/ssc-husky/static/js/album.js?v=1"></script>
+
+  </main>
+
+  <!-- ============ ФУТЕР ============ -->
+  <footer class="footer">
+    <div class="container footer__cols">
+      <div>
+        <h3>ССК «Хаски»</h3>
+        <p>Студенческий спортивный клуб ЮУТУ. Работаем с 2012 года — делаем студенческий спорт Южного Урала громче.</p>
+        <p>Комсомольский проспект, 113а, Челябинск</p>
+      </div>
+      <div>
+        <h3>Разделы</h3>
+        <a href="/ssc-husky/about/">О клубе</a><br>
+        <a href="/ssc-husky/sport/">Спорт</a><br>
+        <a href="/ssc-husky/schedule/">Календарь</a><br>
+        <a href="/ssc-husky/results/">Результаты</a><br>
+        <a href="/ssc-husky/album/">Альбом</a><br>
+        <a href="/ssc-husky/join/">Как записаться</a>
+      </div>
+      <div>
+        <h3>Контакты</h3>
+        <a href="https://vk.ru/ssc_husky_official" rel="noopener">ВКонтакте</a><br>
+        <a href="https://vk.ru/asb.tankograd" rel="noopener">Трансляции матчей</a><br>
+        <a href="/ssc-husky/join/">Форма записи</a>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <span>© ССК «Хаски», 2026. Данные: сообщество ВК + БД сайта.</span>
+      <span>#ССК_Хаски #ЮУТУ #Победы_ХАСКИ</span>
+    </div>
+  </footer>
+
+  <script src="/ssc-husky/static/js/app.js?v=4"></script>
+</body>
+</html>
