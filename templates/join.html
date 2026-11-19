@@ -74,6 +74,19 @@
       </div>
     {% endif %}
 
+    <!-- Успех для облачной отправки (cloud-db.js): статическое демо не умеет ?sent=1 -->
+    <template id="joinSuccessTpl">
+      <div class="cta" tabindex="-1">
+        <h2>🐾 Заявка принята!</h2>
+        <p>Мы свяжемся с вами в течение 1–2 рабочих дней. Заявка сохранена в базе клуба.</p>
+        <p class="cta__note">Удобнее написать напрямую? Сообщество ВКонтакте: vk.ru/ssc_husky_official</p>
+        <p style="margin-top: var(--sp-16)">
+          <a class="btn btn--plate" href="/">На главную</a>
+          <a class="btn btn--plate" href="https://vk.ru/ssc_husky_official" rel="noopener">Мы в ВКонтакте</a>
+        </p>
+      </div>
+    </template>
+
     <!-- FAQ новичка (аккордеон) -->
     <div class="section__head" style="margin-top: var(--sp-48)">
       <h2>Вопросы новичка</h2>
@@ -96,4 +109,8 @@
     </details>
   </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/cloud-db.js', v=1) }}"></script>
 {% endblock %}

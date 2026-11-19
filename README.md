@@ -10,9 +10,10 @@
 | Сайт (демо дизайна, GitHub Pages)| https://ivan-krytoi.github.io/ssc-husky/                      |
 | Код проекта                     | https://github.com/Ivan-Krytoi/ssc-husky                       |
 
-Демо на Pages показывает дизайн и все разделы сайта. Работа с базой
-(заявки с формы записываются в SQLite) — только в живом Flask-варианте,
-запуск — по инструкции ниже.
+Демо на Pages показывает дизайн и все разделы сайта. Заявки с формы записи
+попадают в облачную БД Supabase (PostgreSQL) прямо из браузера — и в демо,
+и в живом Flask-варианте; локальная SQLite остаётся резервным вариантом
+без JS. Запуск Flask — по инструкции ниже.
 
 ## Как запустить (для жюри)
 
@@ -49,6 +50,7 @@ flask run --port 5001
 │   ├── css/               # tokens.css, style.css (дизайн-кит), home-cards.css, pages.css
 │   ├── js/app.js          # тема, счётчики, reveal, фильтры календаря, паузы полёта
 │   │   /js/album.js       # лайтбокс альбома (Esc/←/→, возврат фокуса, блокировка скролла)
+│   │   /js/cloud-db.js    # отправка заявок в облачную БД Supabase (работает и на Pages)
 │   └── assets/            # логотип/баннер/favicon/паттерны + assets/album (26 фото клуба)
 └── instance/              # локальная БД (в git не попадает, создаётся flask init-db)
     └── data/haski.db      # SQLite — создаётся flask init-db
@@ -70,11 +72,55 @@ flask run --port 5001
 | `messages`    | обратная связь (страница контактов)             | —                         |
 | `admins`      | учётка мини-админки (Фаза 2)                    | admin / haski-demo-2026   |
 
+### Структура таблиц (поля)
+
+Одинакова в SQLite и Supabase; в SQLite типы `INTEGER/TEXT`, в Postgres —
+`bigint/text/timestamptz`. Полные определения: `schema.sql` (SQLite) и
+`scripts/supabase_schema.sql` (Postgres + RLS).
+
+```
+disciplines   id, slug UNIQUE, name, icon, badge, description, schedule_note, sort
+events        id, title, discipline, event_date (NULL → «дата уточняется»),
+              place, status (done|soon|tbd), result, sort
+results       id, competition, place, group_name, points, note, updated_at
+stats         key PK, value, label, suffix
+news          id, date, category, title, body, image, sort
+applications  id, created_at, name, group_name, discipline, contact, status («Новая»)
+messages      id, created_at, name, contact, body
+admins        id, username UNIQUE, password_hash   — только SQLite (мини-админка)
+```
+
+Связи: жёстких FOREIGN KEY нет — `events.discipline` и `applications.discipline`
+хранят человекочитаемое название дисциплины, `results.group_name` — номер группы.
+В Supabase у `applications`/`messages` стоят CHECK-ограничения длины полей
+(защита от мусора и переполнения), у `events.status` — CHECK по трём статусам.
+
 Проверить содержимое:
 
 ```bash
 ./.venv/Scripts/python.exe -c "import sqlite3; [print(r) for r in sqlite3.connect('instance/data/haski.db').execute('SELECT id, name, discipline, contact FROM applications')]"
 ```
+
+## Облачная база данных (Supabase, бесплатный тариф)
+
+Чтобы заявки работали и в статическом демо на GitHub Pages, форма записи
+пишет в облачный PostgreSQL (Supabase, проект `haski-club`, регион Europe):
+
+- адрес проекта: `https://zvoenupgvmtulfkgwzyf.supabase.co`;
+- схема и сид: `scripts/supabase_schema.sql` (Postgres-версия `schema.sql`,
+  выполняется в SQL Editor дашборда Supabase);
+- отправка с сайта: `static/js/cloud-db.js` — POST в REST API Supabase
+  с публичным anon-ключом (он не секретный и рассчитан на браузер);
+- защита (RLS): контент (`disciplines`, `events`, `results`, `stats`, `news`)
+  читается всеми; `applications` и `messages` — анониму только INSERT,
+  чтение/изменение/удаление запрещены (заявки видит только владелец проекта);
+- просмотр заявок: дашборд Supabase → Table Editor → `applications`
+  (вход через GitHub владельца проекта);
+- ограничения бесплатного тарифа: 500 МБ, проект засыпает после 7 дней
+  без обращений и просыпается по первому запросу (данные не теряются).
+
+Локальная SQLite (`flask init-db`) остаётся запасным путём: без JS форма
+отправляется обычным POST во Flask и пишется в `instance/data/haski.db`.
 
 ## Особенности главной («Пролёт карточек»)
 
